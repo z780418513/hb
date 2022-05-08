@@ -1,9 +1,9 @@
-package com.zhao.hb.service;
+package com.hb.service;
 
-import com.zhao.hb.mapper.UserMapper;
-import com.zhao.hb.model.User;
+
+import com.hb.system.mapper.SysUserMapper;
+import com.hb.system.model.SysUser;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,11 +18,11 @@ import java.util.List;
 @Service
 public class HbUserDetailsService implements UserDetailsService {
     @Resource
-    private UserMapper userMapper;
+    private SysUserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userMapper.findByUsername(username);
+        SysUser user = userMapper.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }

@@ -1,11 +1,11 @@
-package com.zhao.hb;
+package com.hb;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.zhao.hb.mapper")
+@MapperScan("com.hb.system.mapper")
 public class HbApplication {
 
     public static void main(String[] args) {

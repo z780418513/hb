@@ -1,4 +1,4 @@
-package com.zhao.hb.model;
+package com.hb.system.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -13,12 +13,12 @@ import java.util.List;
 
 @Data
 @TableName("sys_user")
-public class User implements UserDetails {
+public class SysUser implements UserDetails {
     @TableId(type = IdType.ASSIGN_UUID)
     private Long id;
 
     @TableField("username")
-    private String userName;
+    private String username;
 
     @TableField("password")
     private String password;
@@ -41,7 +41,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.userName;
+        return this.username;
     }
 
     /**

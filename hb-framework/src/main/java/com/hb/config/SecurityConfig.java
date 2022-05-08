@@ -1,6 +1,9 @@
-package com.zhao.hb.config;
+package com.hb.config;
 
-import com.zhao.hb.service.HbUserDetailsService;
+import com.hb.security.CustomizeAuthenticationEntryPoint;
+import com.hb.security.CustomizeAuthenticationFailureHandler;
+import com.hb.security.CustomizeAuthenticationSuccessHandler;
+import com.hb.service.HbUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +20,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     private HbUserDetailsService detailsService;
+
+    // 登录成功处理逻辑
+    @Resource
+    private CustomizeAuthenticationSuccessHandler authenticationSuccessHandler;
+
+    // 匿名用户访问无权限资源时的异常
+    @Resource
+    private CustomizeAuthenticationEntryPoint authenticationEntryPoint;
+
+    @Resource
+    private CustomizeAuthenticationFailureHandler authenticationFailureHandler;
 
     /**
      * PasswordEncoder 是security的加密类,必须实现
@@ -42,20 +56,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
-                .loginPage("/login.html")
-                .loginProcessingUrl("/user/login") // 登录接口post
-                .defaultSuccessUrl("/index.html") // 认证成功跳转地址
-//                .failureUrl("/error.html") // 认证失败跳转地址
-                .permitAll()
+        http
+                //关闭csrf
+                .csrf().disable()
+                // 认证失败处理器
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+
+                .formLogin().loginPage("/login.html")
+                .successHandler(authenticationSuccessHandler) // 登录成功处理拦截器
+                .failureHandler(authenticationFailureHandler)
+                .permitAll().and()
+
+                // 过滤请求
+                .authorizeRequests()
+                .antMatchers("/login.html","/user/login").permitAll()  //登录请求放行
+                // 除上面外的所有请求全部需要鉴权认证
+                .anyRequest().authenticated();
 
 
-                .and().authorizeRequests()
-                .antMatchers("/user/login").permitAll()  //登录请求放行
-//                .antMatchers("/error.html").permitAll()  //登入失败放行
-                .anyRequest().authenticated() // 所有的请求都需要被认证
-
-                .and().csrf().disable(); //关闭csrf
 
     }
 

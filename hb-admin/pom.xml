@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>hb</artifactId>
-        <groupId>com.zhao</groupId>
+        <groupId>com.hb</groupId>
         <version>0.0.1</version>
     </parent>
 
@@ -15,7 +15,7 @@
     <dependencies>
         <!--hb-framework依赖-->
         <dependency>
-            <groupId>com.zhao</groupId>
+            <groupId>com.hb</groupId>
             <artifactId>hb-framework</artifactId>
         </dependency>
     </dependencies>
