@@ -1,7 +1,6 @@
 package com.hb.web.system.controller;
 
 import com.hb.core.R;
-import com.hb.service.HbUserDetailsService;
 import com.hb.system.model.SysUser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +14,12 @@ import javax.annotation.Resource;
 @RestController
 public class SysLoginController {
     @Resource
-    private HbUserDetailsService hbUserDetailsService;
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/user/login")
     public R login(@RequestBody SysUser user) {
-        hbUserDetailsService.loadUserByUsername(user.getUsername());
+        Authentication authenticate = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         return R.success();
     }
 }

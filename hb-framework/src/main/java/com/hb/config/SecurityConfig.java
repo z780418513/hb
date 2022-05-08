@@ -6,6 +6,9 @@ import com.hb.security.CustomizeAuthenticationSuccessHandler;
 import com.hb.service.HbUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -44,6 +47,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
+     * 解决 无法直接注入 AuthenticationManager
+     *
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+//    @Bean
+//    public AuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+//        //对默认的UserDetailsService进行覆盖
+//        authenticationProvider.setUserDetailsService(detailsService);
+//        authenticationProvider.setPasswordEncoder(passwordEncoder());
+//        return authenticationProvider;
+//    }
+
+    /**
      * 用户认证配置
      *
      * @param auth
@@ -57,22 +81,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+//                // 用户认证
+//                .authenticationProvider(authenticationProvider())
                 //关闭csrf
                 .csrf().disable()
                 // 认证失败处理器
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 
-                .formLogin().loginPage("/login.html")
-                .successHandler(authenticationSuccessHandler) // 登录成功处理拦截器
-                .failureHandler(authenticationFailureHandler)
-                .permitAll().and()
+                .formLogin().permitAll()
+                // 登录成功处理拦截器
+                .successHandler(authenticationSuccessHandler)
+                // 登录失败处理拦截器
+                .failureHandler(authenticationFailureHandler).and()
 
                 // 过滤请求
                 .authorizeRequests()
-                .antMatchers("/login.html","/user/login").permitAll()  //登录请求放行
+                // 登录请求放行 允许匿名访问
+                .antMatchers("/user/login").anonymous()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
-
 
 
     }
