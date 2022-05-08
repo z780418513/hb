@@ -54,11 +54,13 @@
             <dependency>
                 <groupId>com.zhao</groupId>
                 <artifactId>hb-admin</artifactId>
+                <version>${version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.zhao</groupId>
                 <artifactId>hb-framework</artifactId>
+                <version>${version}</version>
             </dependency>
 
         </dependencies>
