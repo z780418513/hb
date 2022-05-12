@@ -1,4 +1,4 @@
-package com.hb.core;
+package com.hb.common;
 
 
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author hanbaolaoba
  */
-public class R extends HashMap<String, Object> {
+public class Result extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -30,30 +30,30 @@ public class R extends HashMap<String, Object> {
     public static final String DATA_TAG = "data";
 
     /**
-     * 初始化一个新创建的 R 对象，使其表示一个空消息。
+     * 初始化一个新创建的 Result 对象，使其表示一个空消息。
      */
-    public R() {
+    public Result() {
     }
 
     /**
-     * 初始化一个新创建的 R 对象
+     * 初始化一个新创建的 Result 对象
      *
      * @param code 状态码
      * @param msg  返回内容
      */
-    public R(int code, String msg) {
+    public Result(int code, String msg) {
         super.put(CODE_TAG, code);
         super.put(MSG_TAG, msg);
     }
 
     /**
-     * 初始化一个新创建的 R 对象
+     * 初始化一个新创建的 Result 对象
      *
      * @param code 状态码
      * @param msg  返回内容
      * @param data 数据对象
      */
-    public R(int code, String msg, Object data) {
+    public Result(int code, String msg, Object data) {
         super.put(CODE_TAG, code);
         super.put(MSG_TAG, msg);
         if (Objects.nonNull(data)) {
@@ -66,8 +66,8 @@ public class R extends HashMap<String, Object> {
      *
      * @return 成功消息
      */
-    public static R success() {
-        return R.success("操作成功");
+    public static Result success() {
+        return Result.success("操作成功");
     }
 
     /**
@@ -75,8 +75,8 @@ public class R extends HashMap<String, Object> {
      *
      * @return 成功消息
      */
-    public static R success(Object data) {
-        return R.success("操作成功", data);
+    public static Result success(Object data) {
+        return Result.success("操作成功", data);
     }
 
     /**
@@ -85,8 +85,8 @@ public class R extends HashMap<String, Object> {
      * @param msg 返回内容
      * @return 成功消息
      */
-    public static R success(String msg) {
-        return R.success(msg, null);
+    public static Result success(String msg) {
+        return Result.success(msg, null);
     }
 
     /**
@@ -96,8 +96,8 @@ public class R extends HashMap<String, Object> {
      * @param data 数据对象
      * @return 成功消息
      */
-    public static R success(String msg, Object data) {
-        return new R(HttpStatus.OK.value(), msg, data);
+    public static Result success(String msg, Object data) {
+        return new Result(HttpStatus.OK.value(), msg, data);
     }
 
     /**
@@ -105,8 +105,8 @@ public class R extends HashMap<String, Object> {
      *
      * @return
      */
-    public static R error() {
-        return R.error("操作失败");
+    public static Result error() {
+        return Result.error("操作失败");
     }
 
     /**
@@ -115,8 +115,8 @@ public class R extends HashMap<String, Object> {
      * @param msg 返回内容
      * @return 警告消息
      */
-    public static R error(String msg) {
-        return R.error(msg, null);
+    public static Result error(String msg) {
+        return Result.error(msg, null);
     }
 
     /**
@@ -126,8 +126,8 @@ public class R extends HashMap<String, Object> {
      * @param data 数据对象
      * @return 警告消息
      */
-    public static R error(String msg, Object data) {
-        return new R(HttpStatus.NOT_FOUND.value(), msg, data);
+    public static Result error(String msg, Object data) {
+        return new Result(HttpStatus.NOT_FOUND.value(), msg, data);
     }
 
     /**
@@ -137,8 +137,8 @@ public class R extends HashMap<String, Object> {
      * @param msg  返回内容
      * @return 警告消息
      */
-    public static R error(int code, String msg) {
-        return new R(code, msg, null);
+    public static Result error(int code, String msg) {
+        return new Result(code, msg, null);
     }
 
     /**
@@ -149,7 +149,7 @@ public class R extends HashMap<String, Object> {
      * @return 数据对象
      */
     @Override
-    public R put(String key, Object value) {
+    public Result put(String key, Object value) {
         super.put(key, value);
         return this;
     }

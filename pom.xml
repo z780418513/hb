@@ -19,6 +19,8 @@
         <lombok-version>1.18.24</lombok-version>
         <mysql-version>8.0.28</mysql-version>
         <fastjson-version>2.0.2</fastjson-version>
+        <oss-version>3.14.1</oss-version>
+        <captcha.version>1.6.2</captcha.version>
     </properties>
 
     <dependencyManagement>
@@ -58,6 +60,12 @@
                 <version>${fastjson-version}</version>
             </dependency>
 
+            <!--图形验证码生成-->
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${captcha.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.hb</groupId>
@@ -77,6 +85,13 @@
                 <version>${version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.hb</groupId>
+                <artifactId>hb-common</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
 
@@ -84,6 +99,7 @@
         <module>hb-admin</module>
         <module>hb-framework</module>
         <module>hb-system</module>
+        <module>hb-common</module>
     </modules>
 
     <packaging>pom</packaging>

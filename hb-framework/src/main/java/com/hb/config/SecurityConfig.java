@@ -3,6 +3,7 @@ package com.hb.config;
 import com.hb.security.CustomizeAuthenticationEntryPoint;
 import com.hb.security.CustomizeAuthenticationFailureHandler;
 import com.hb.security.CustomizeAuthenticationSuccessHandler;
+import com.hb.security.LoginAuthenticationProvider;
 import com.hb.service.HbUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private HbUserDetailsService detailsService;
 
-    // 登录成功处理逻辑
+    // 登录成功拦截器
     @Resource
     private CustomizeAuthenticationSuccessHandler authenticationSuccessHandler;
 
@@ -32,8 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private CustomizeAuthenticationEntryPoint authenticationEntryPoint;
 
+    // 认证失败拦截器
     @Resource
     private CustomizeAuthenticationFailureHandler authenticationFailureHandler;
+
 
     /**
      * PasswordEncoder 是security的加密类,必须实现
@@ -58,14 +61,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Bean
-//    public AuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//        //对默认的UserDetailsService进行覆盖
-//        authenticationProvider.setUserDetailsService(detailsService);
-//        authenticationProvider.setPasswordEncoder(passwordEncoder());
-//        return authenticationProvider;
-//    }
+    @Bean
+    public LoginAuthenticationProvider loginAuthenticationProvider() {
+        LoginAuthenticationProvider provider = new LoginAuthenticationProvider();
+        provider.setUserDetailsService(detailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
 
     /**
      * 用户认证配置
@@ -75,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(detailsService).passwordEncoder(passwordEncoder());
+        auth.authenticationProvider(loginAuthenticationProvider());
     }
 
     @Override
@@ -97,7 +100,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 过滤请求
                 .authorizeRequests()
                 // 登录请求放行 允许匿名访问
-                .antMatchers("/user/login").anonymous()
+                .antMatchers("/user/login","/captcha").anonymous()
+
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
 

@@ -1,8 +1,8 @@
 package com.hb.security;
 
 import com.alibaba.fastjson2.JSON;
-import com.hb.core.R;
-import com.hb.core.utils.ServletUtils;
+import com.hb.common.Result;
+import com.hb.common.utils.ServletUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -21,6 +21,6 @@ public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoi
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         int code = HttpStatus.UNAUTHORIZED.value();
         String msg = String.format("请求访问：%s，认证失败，无法访问系统资源", request.getRequestURI());
-        ServletUtils.renderString(response, JSON.toJSONString(R.error(code, msg)));
+        ServletUtils.renderString(response, JSON.toJSONString(Result.error(code, msg)));
     }
 }

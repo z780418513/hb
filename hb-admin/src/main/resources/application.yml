@@ -5,6 +5,8 @@ spring:
     password: 123456
     username: root
     url: jdbc:mysql://124.220.180.141/hb
+  redis:
+    host: 124.220.180.141
 
 
 mybatis-plus:
@@ -18,3 +20,4 @@ mybatis-plus:
 
 server:
   port: 1026 #端口
+
