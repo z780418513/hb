@@ -84,8 +84,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-//                // 用户认证
-//                .authenticationProvider(authenticationProvider())
                 //关闭csrf
                 .csrf().disable()
                 // 认证失败处理器
@@ -100,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 过滤请求
                 .authorizeRequests()
                 // 登录请求放行 允许匿名访问
-                .antMatchers("/user/login","/captcha").anonymous()
+                .antMatchers("/user/login", "/captcha").anonymous()
 
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();

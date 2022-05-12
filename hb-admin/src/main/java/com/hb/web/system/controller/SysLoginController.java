@@ -4,6 +4,8 @@ package com.hb.web.system.controller;
 import com.hb.common.Result;
 import com.hb.common.SysConstant;
 import com.hb.common.ValidGroup;
+import com.hb.common.enums.BusinessExceptionEnum;
+import com.hb.common.expection.BusinessException;
 import com.hb.common.utils.RedisUtil;
 import com.hb.system.model.LoginBody;
 import com.wf.captcha.SpecCaptcha;
@@ -39,7 +41,7 @@ public class SysLoginController {
         String captchaCode = (String) redisUtil.get(SysConstant.CAPTCHA_PREFIX + user.getUuid());
         redisUtil.del(SysConstant.CAPTCHA_PREFIX + user.getUuid());
         if (!user.getCaptcha().equals(captchaCode)) {
-            return Result.error("验证码错误");
+           throw new BusinessException(BusinessExceptionEnum.CODE_OR_PASSWORD_ERROR);
         }
         // 校验用户名密码
         Authentication authenticate = authenticationManager
