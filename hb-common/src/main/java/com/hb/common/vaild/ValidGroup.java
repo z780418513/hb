@@ -1,7 +1,8 @@
-package com.hb.common;
+package com.hb.common.vaild;
 
 /**
  * 校验组
+ * @author hanbaolaoba
  */
 public interface ValidGroup {
 

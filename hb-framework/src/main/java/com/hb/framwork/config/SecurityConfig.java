@@ -1,15 +1,13 @@
-package com.hb.config;
+package com.hb.framwork.config;
 
-import com.hb.security.CustomizeAuthenticationEntryPoint;
-import com.hb.security.CustomizeAuthenticationFailureHandler;
-import com.hb.security.CustomizeAuthenticationSuccessHandler;
-import com.hb.security.LoginAuthenticationProvider;
-import com.hb.service.HbUserDetailsService;
+import com.hb.framwork.security.CustomizeAuthenticationEntryPoint;
+import com.hb.framwork.security.CustomizeAuthenticationFailureHandler;
+import com.hb.framwork.security.CustomizeAuthenticationSuccessHandler;
+import com.hb.framwork.security.LoginAuthenticationProvider;
+import com.hb.framwork.security.service.HbUserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -19,21 +17,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Resource;
 
+/**
+ * @author hanbaolaoba
+ */
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * 自定义UserDetailsService
+     */
     @Resource
-    private HbUserDetailsService detailsService;
+    private HbUserDetailsServiceImpl detailsService;
 
-    // 登录成功拦截器
+    /**
+     * 登录成功拦截器
+     */
     @Resource
     private CustomizeAuthenticationSuccessHandler authenticationSuccessHandler;
 
-    // 匿名用户访问无权限资源时的异常
+    /**
+     * 匿名用户访问无权限资源时的异常
+     */
     @Resource
     private CustomizeAuthenticationEntryPoint authenticationEntryPoint;
 
-    // 认证失败拦截器
+    /**
+     * 认证失败拦截器
+     */
     @Resource
     private CustomizeAuthenticationFailureHandler authenticationFailureHandler;
 

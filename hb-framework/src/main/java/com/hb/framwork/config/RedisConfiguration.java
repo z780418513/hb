@@ -1,4 +1,4 @@
-package com.hb.config;
+package com.hb.framwork.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 /**
  * redis序列化配置
+ * @author hanbaolaoba
  */
 @Configuration
 public class RedisConfiguration {

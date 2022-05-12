@@ -5,6 +5,7 @@ import lombok.Getter;
 
 /**
  * 业务异常枚举类
+ * @author hanbaolaoba
  */
 @Getter
 public enum BusinessExceptionEnum implements BaseEnum {

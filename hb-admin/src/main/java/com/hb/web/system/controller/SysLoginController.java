@@ -2,8 +2,8 @@ package com.hb.web.system.controller;
 
 
 import com.hb.common.Result;
-import com.hb.common.SysConstant;
-import com.hb.common.ValidGroup;
+import com.hb.common.constants.SysConstant;
+import com.hb.common.vaild.ValidGroup;
 import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.expection.BusinessException;
 import com.hb.common.utils.RedisUtil;
@@ -22,6 +22,9 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.UUID;
 
+/**
+ * @author hanbaolaoba
+ */
 @RestController
 public class SysLoginController {
     @Resource

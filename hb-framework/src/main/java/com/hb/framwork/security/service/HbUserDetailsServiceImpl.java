@@ -1,4 +1,4 @@
-package com.hb.service;
+package com.hb.framwork.security.service;
 
 
 import com.hb.system.mapper.SysUserMapper;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class HbUserDetailsService implements UserDetailsService {
+public class HbUserDetailsServiceImpl implements UserDetailsService {
     @Resource
     private SysUserMapper userMapper;
 

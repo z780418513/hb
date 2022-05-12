@@ -1,5 +1,10 @@
-package com.hb.common;
+package com.hb.common.constants;
 
+/**
+ * Sys常量
+ *
+ * @author hanbaolaoba
+ */
 public class SysConstant {
     /**
      * 验证码redis前缀

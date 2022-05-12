@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author hanbaolaoba
+ */
 @Data
 @TableName("sys_user")
 public class SysUser implements UserDetails {

@@ -1,4 +1,4 @@
-package com.hb.security;
+package com.hb.framwork.security;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -6,6 +6,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+/**
+ * 用于在认证用户名密码外的额外校验
+ *
+ * @author hanbaolaoba
+ */
 public class LoginAuthenticationProvider extends DaoAuthenticationProvider {
 
 

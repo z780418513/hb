@@ -1,9 +1,8 @@
-package com.hb.security;
+package com.hb.framwork.security;
 
 import com.alibaba.fastjson2.JSON;
 import com.hb.common.Result;
 import com.hb.common.utils.ServletUtils;
-import com.hb.system.mapper.SysUserMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;

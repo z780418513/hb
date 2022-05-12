@@ -1,4 +1,4 @@
-package com.hb.handler;
+package com.hb.framwork.handler;
 
 import com.hb.common.Result;
 import org.springframework.validation.BindingResult;
@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+/**
+ * 全局异常捕获拦截器
+ *
+ * @author hanbaolaoba
+ */
 @ControllerAdvice
-public class GlobalExceptionAdviceHandler extends Exception {
+public class GlobalAdviceException extends Exception {
 
     /**
      * 捕获全局异常

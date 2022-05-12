@@ -5,6 +5,9 @@ import com.hb.system.model.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+/**
+ * @author hanbaolaoba
+ */
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
