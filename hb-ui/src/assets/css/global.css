@@ -1,0 +1,22 @@
+html,
+body,
+#app {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+input::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.54);
+}
+
+input::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: rgba(255, 255, 255, 0.54);
+}
+
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: rgba(255, 255, 255, 0.54);
+}
+
+input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgba(255, 255, 255, 0.54);
+}
