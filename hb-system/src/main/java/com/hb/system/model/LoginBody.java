@@ -14,8 +14,6 @@ public class LoginBody {
     private String username;
     @NotBlank(message = "密码不能为空", groups = {ValidGroup.Search.class})
     private String password;
-    @NotBlank(message = "uuid不能为空", groups = {ValidGroup.Search.class})
     private String uuid;
-    @NotBlank(message = "验证码不能为空", groups = {ValidGroup.Search.class})
     private String captcha;
 }

@@ -9,6 +9,7 @@ import com.hb.common.expection.BusinessException;
 import com.hb.common.utils.RedisUtil;
 import com.hb.system.model.LoginBody;
 import com.wf.captcha.SpecCaptcha;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,11 +42,7 @@ public class SysLoginController {
     @PostMapping("/user/login")
     public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user) {
         // 校验验证码
-        String captchaCode = (String) redisUtil.get(SysConstant.CAPTCHA_PREFIX + user.getUuid());
-        redisUtil.del(SysConstant.CAPTCHA_PREFIX + user.getUuid());
-        if (!user.getCaptcha().equals(captchaCode)) {
-           throw new BusinessException(BusinessExceptionEnum.CODE_OR_PASSWORD_ERROR);
-        }
+//        checkCaptcha(user);
         // 校验用户名密码
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
@@ -70,6 +67,22 @@ public class SysLoginController {
         HashMap<String, Object> map = new HashMap<>();
         map.put("uuid", uuid);
         return Result.success(map);
+    }
 
+    /**
+     * 校验验证码
+     *
+     * @param user
+     */
+    public void checkCaptcha(LoginBody user) {
+        // 校验验证码
+        if (StringUtils.isBlank(user.getUuid()) || StringUtils.isBlank(user.getCaptcha())) {
+            throw new BusinessException(BusinessExceptionEnum.CAPTCHA_OR_UUID_NULL);
+        }
+        String captchaCode = (String) redisUtil.get(SysConstant.CAPTCHA_PREFIX + user.getUuid());
+        redisUtil.del(SysConstant.CAPTCHA_PREFIX + user.getUuid());
+        if (!user.getCaptcha().equals(captchaCode)) {
+            throw new BusinessException(BusinessExceptionEnum.CODE_OR_PASSWORD_ERROR);
+        }
     }
 }
