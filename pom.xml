@@ -21,6 +21,7 @@
         <fastjson-version>2.0.2</fastjson-version>
         <oss-version>3.14.1</oss-version>
         <captcha.version>1.6.2</captcha.version>
+        <jjwt.version>0.9.0</jjwt.version>
     </properties>
 
     <dependencyManagement>
@@ -65,6 +66,13 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>${captcha.version}</version>
+            </dependency>
+
+            <!--JWT-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
 
             <dependency>

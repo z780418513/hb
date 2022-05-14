@@ -7,17 +7,19 @@ import com.hb.common.vaild.ValidGroup;
 import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.expection.BusinessException;
 import com.hb.common.utils.RedisUtil;
+import com.hb.framwork.security.service.JwtAuthService;
+import com.hb.framwork.security.utils.JwtTokenUtil;
 import com.hb.system.model.LoginBody;
+import com.hb.system.model.SysUser;
 import com.wf.captcha.SpecCaptcha;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -32,6 +34,8 @@ public class SysLoginController {
     private AuthenticationManager authenticationManager;
     @Resource
     private RedisUtil redisUtil;
+    @Resource
+    private JwtAuthService jwtAuthService;
 
     /**
      * 用户登录
@@ -43,14 +47,26 @@ public class SysLoginController {
     public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user) {
         // 校验验证码
 //        checkCaptcha(user);
-        // 校验用户名密码
-        Authentication authenticate = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+        // 登录并获得验证码
+        String token = jwtAuthService.login(user.getUsername(), user.getPassword());
+
         // 可以拿到用户登录信息,并对应做处理
-        System.out.println(authenticate);
-        return Result.success();
+        System.out.println(token);
+        return Result.success(token);
     }
 
+
+    /**
+     * 刷新token
+     *
+     * @param token
+     * @return
+     */
+    @PostMapping("/token/refresh")
+    public Result refresh(@RequestHeader("${jwt.header}") String token) {
+        return Result.success(jwtAuthService.refreshToken(token));
+    }
 
     /**
      * 获取验证码(过期时间1分钟)

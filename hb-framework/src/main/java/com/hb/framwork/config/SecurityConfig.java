@@ -1,9 +1,6 @@
 package com.hb.framwork.config;
 
-import com.hb.framwork.security.CustomizeAuthenticationEntryPoint;
-import com.hb.framwork.security.CustomizeAuthenticationFailureHandler;
-import com.hb.framwork.security.CustomizeAuthenticationSuccessHandler;
-import com.hb.framwork.security.LoginAuthenticationProvider;
+import com.hb.framwork.security.*;
 import com.hb.framwork.security.service.HbUserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +9,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
 
@@ -46,6 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Resource
     private CustomizeAuthenticationFailureHandler authenticationFailureHandler;
+
+    @Resource
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
 
     /**
@@ -96,6 +98,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 //关闭csrf
                 .csrf().disable()
+                // 永远不会创建HttpSession并且永远不会使用它来获取SecurityContext,适用于前后端分离
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // 认证失败处理器
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
 
@@ -104,6 +108,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(authenticationSuccessHandler)
                 // 登录失败处理拦截器
                 .failureHandler(authenticationFailureHandler).and()
+
+                // 自定义jwt过滤器
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
 
                 // 过滤请求
                 .authorizeRequests()
