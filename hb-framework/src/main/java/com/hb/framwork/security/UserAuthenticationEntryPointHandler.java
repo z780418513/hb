@@ -12,15 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 匿名用户访问无权限资源时
+ * 用户未登录处理类
  */
 @Component
-public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class UserAuthenticationEntryPointHandler implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        int code = HttpStatus.UNAUTHORIZED.value();
-        String msg = String.format("请求访问：%s，认证失败，无法访问系统资源", request.getRequestURI());
-        ServletUtils.renderString(response, JSON.toJSONString(Result.error(code, msg)));
+        ServletUtils.renderString(response, Result.error(401, "未登录").toString());
     }
 }

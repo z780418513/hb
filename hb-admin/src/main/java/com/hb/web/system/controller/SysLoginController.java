@@ -31,8 +31,6 @@ import java.util.UUID;
 @RestController
 public class SysLoginController {
     @Resource
-    private AuthenticationManager authenticationManager;
-    @Resource
     private RedisUtil redisUtil;
     @Resource
     private JwtAuthService jwtAuthService;

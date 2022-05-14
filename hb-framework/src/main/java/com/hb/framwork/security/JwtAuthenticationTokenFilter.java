@@ -1,11 +1,22 @@
 package com.hb.framwork.security;
 
+import com.alibaba.fastjson2.JSONObject;
+import com.hb.framwork.config.JWTConfig;
 import com.hb.framwork.security.service.HbUserDetailsServiceImpl;
 import com.hb.framwork.security.utils.JwtTokenUtil;
 import com.hb.system.model.SysUser;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,9 +26,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Component
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+@Slf4j
+public class JwtAuthenticationTokenFilter extends BasicAuthenticationFilter {
+    public JwtAuthenticationTokenFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+    }
 
     @Resource
     HbUserDetailsServiceImpl userDetailsService;
@@ -28,31 +46,49 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        //从请求头中获取token
-        String jwtToken = request.getHeader(jwtTokenUtil.getHeader());
-        //token判空
-        if (jwtToken != null && StringUtils.isNoneEmpty(jwtToken)) {
-            //获取用户姓名
-            String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+        // 获取请求头中JWT的Token
+        String tokenHeader = request.getHeader(JWTConfig.tokenHeader);
+        if (null != tokenHeader && tokenHeader.startsWith(JWTConfig.tokenPrefix)) {
+            try {
+                // 截取JWT前缀
+                String token = tokenHeader.replace(JWTConfig.tokenPrefix, "");
+                // 解析JWT
+                Claims claims = Jwts.parser()
+                        .setSigningKey(JWTConfig.secret)
+                        .parseClaimsJws(token)
+                        .getBody();
+                // 获取用户名
+                String username = claims.getSubject();
+                String userId = claims.getId();
+                if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(userId)) {
+                    // 获取角色
+                    List<GrantedAuthority> authorities = new ArrayList<>();
+                    String authority = claims.get("authorities").toString();
+                    if (!StringUtils.isEmpty(authority)) {
+                        List<Map<String, String>> authorityMap = JSONObject.parseObject(authority, List.class);
+                        for (Map<String, String> role : authorityMap) {
+                            if (role.size() !=0) {
+                                authorities.add(new SimpleGrantedAuthority(role.get("authority")));
+                            }
+                        }
+                    }
+                    //组装参数
+                    SysUser sysUser = new SysUser();
+                    sysUser.setUsername(claims.getSubject());
+                    sysUser.setId(Long.parseLong(claims.getId()));
+                    sysUser.setAuthorities(authorities);
 
-            //如果可以正确的从JWT中提取用户信息，并且该用户未被授权
-            if (username != null &&
-                    SecurityContextHolder.getContext().getAuthentication() == null) {
-
-                SysUser userDetails = (SysUser) userDetailsService.loadUserByUsername(username);
-                //检验token的合法性
-                if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-                    //给使用该JWT令牌的用户进行授权
-                    UsernamePasswordAuthenticationToken authenticationToken
-                            = new UsernamePasswordAuthenticationToken(userDetails, null,
-                            userDetails.getAuthorities());
-                    //放入spring security的上下文环境中，表示认证通过
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(sysUser, userId, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
+            } catch (ExpiredJwtException e) {
+                log.info("Token过期");
+            } catch (Exception e) {
+                log.info("Token无效");
             }
         }
-        //过滤器链往后继续执行
+
         filterChain.doFilter(request, response);
+
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
@@ -23,31 +24,40 @@ import javax.annotation.Resource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
-     * 自定义UserDetailsService
+     * 登录成功处理类
      */
     @Resource
-    private HbUserDetailsServiceImpl detailsService;
+    private UserLoginSuccessHandler authenticationSuccessHandler;
 
     /**
-     * 登录成功拦截器
+     * 登录失败处理类
      */
     @Resource
-    private CustomizeAuthenticationSuccessHandler authenticationSuccessHandler;
+    private UserLoginFailureHandler authenticationFailureHandler;
 
     /**
-     * 匿名用户访问无权限资源时的异常
+     * 自定义注销成功处理器
      */
     @Resource
-    private CustomizeAuthenticationEntryPoint authenticationEntryPoint;
+    private UserLogoutSuccessHandler userLogoutSuccessHandler;
 
     /**
-     * 认证失败拦截器
+     * 自定义暂无权限处理器
      */
     @Resource
-    private CustomizeAuthenticationFailureHandler authenticationFailureHandler;
+    private UserAuthAccessDeniedHandler userAuthAccessDeniedHandler;
 
+    /**
+     * 用户未登录处理类
+     */
     @Resource
-    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    private UserAuthenticationEntryPointHandler authenticationEntryPoint;
+
+    /**
+     * 自定义登录逻辑验证器
+     */
+    @Resource
+    private UserAuthenticationProvider userAuthenticationProvider;
 
 
     /**
@@ -61,6 +71,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
+    /**
+     * 注入自定义PermissionEvaluator
+     */
+    @Bean
+    public DefaultWebSecurityExpressionHandler userSecurityExpressionHandler() {
+        DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
+        handler.setPermissionEvaluator(new UserPermissionEvaluator());
+        return handler;
+    }
+
+
     /**
      * 解决 无法直接注入 AuthenticationManager
      *
@@ -73,61 +95,67 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public LoginAuthenticationProvider loginAuthenticationProvider() {
-        LoginAuthenticationProvider provider = new LoginAuthenticationProvider();
-        provider.setUserDetailsService(detailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
-
 
     /**
-     * 用户认证配置
+     * 配置登录验证逻辑
      *
      * @param auth
      * @throws Exception
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(loginAuthenticationProvider());
+        // 这里可启用我们自己的登陆验证逻辑
+        auth.authenticationProvider(userAuthenticationProvider);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //关闭csrf
-                .csrf().disable()
-                // 永远不会创建HttpSession并且永远不会使用它来获取SecurityContext,适用于前后端分离
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                // 认证失败处理器
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+                // 用户未登录处理类
+                .httpBasic().authenticationEntryPoint(authenticationEntryPoint).and()
 
-                .formLogin().permitAll()
+                // 配置登录地址
+                .formLogin().loginProcessingUrl("/user/login")
                 // 登录成功处理拦截器
                 .successHandler(authenticationSuccessHandler)
                 // 登录失败处理拦截器
                 .failureHandler(authenticationFailureHandler).and()
 
-                // 自定义jwt过滤器
-                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                // 配置退出登录
+                .logout().logoutUrl("/user/logout")
+                .logoutSuccessHandler(userLogoutSuccessHandler).and()
+
+                // 配置没有权限自定义处理类
+                .exceptionHandling().accessDeniedHandler(userAuthAccessDeniedHandler).and()
+
 
                 // 过滤请求
                 .authorizeRequests()
                 // 登录请求放行 允许匿名访问
                 .antMatchers("/user/login", "/captcha").anonymous()
-
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated();
+                .anyRequest().authenticated().and()
+
+                // 开启跨域
+                .cors().and()
+                //关闭csrf
+                .csrf().disable()
+                // 永远不会创建HttpSession并且永远不会使用它来获取SecurityContext,适用于前后端分离
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // 禁用缓存
+                .headers().cacheControl();
+
+        http            // 自定义jwt过滤器
+                .addFilter(new JwtAuthenticationTokenFilter(authenticationManagerBean()));
 
 
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        // 放行static下的css和img的静态资源
-        web.ignoring()
-                .antMatchers("/css/**")
-                .antMatchers("/img/**");
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        // 放行static下的css和img的静态资源
+//        web.ignoring()
+//                .antMatchers("/css/**")
+//                .antMatchers("/img/**");
+//    }
 }

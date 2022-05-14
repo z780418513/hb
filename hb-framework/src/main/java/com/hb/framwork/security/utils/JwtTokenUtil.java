@@ -1,5 +1,7 @@
 package com.hb.framwork.security.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.hb.framwork.config.JWTConfig;
 import com.hb.system.model.SysUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-@ConfigurationProperties(prefix = "jwt")
 @Component
 public class JwtTokenUtil {
 
@@ -25,15 +26,28 @@ public class JwtTokenUtil {
     /**
      * 生成token令牌
      *
-     * @param userDetails 用户
+     * @param sysUser 用户
      * @return 令token牌
      */
-    public String generateToken(SysUser userDetails) {
-        Map<String, Object> claims = new HashMap<>(2);
-        claims.put("sub", userDetails.getUsername());
-        claims.put("created", new Date());
-
-        return generateToken(claims);
+    public String generateToken(SysUser sysUser) {
+        // 登陆成功生成JWT
+        String token = Jwts.builder()
+                // 放入用户名和用户ID
+                .setId(sysUser.getId()+"")
+                // 主题
+                .setSubject(sysUser.getUsername())
+                // 签发时间
+                .setIssuedAt(new Date())
+                // 签发者
+                .setIssuer("hanbaolaoba")
+                // 自定义属性 放入用户拥有权限
+                .claim("authorities", JSONObject.toJSONString(sysUser.getAuthorities()))
+                // 失效时间
+                .setExpiration(new Date(System.currentTimeMillis() + JWTConfig.expiration))
+                // 签名算法和密钥
+                .signWith(SignatureAlgorithm.HS512, JWTConfig.secret)
+                .compact();
+        return token;
     }
 
     /**

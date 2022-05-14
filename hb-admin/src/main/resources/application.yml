@@ -1,4 +1,3 @@
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,8 +22,10 @@ server:
 
 # JWT配置
 jwt:
-  header: JWTheaderName # 请求头中的名字
-  secret: aaaxxx # 秘钥
-  expiration: 3600000 # 过期时间
+  tokenHeader: Authorization # 请求头中的名字
+  secret: JWTSecret # 秘钥
+  tokenPrefix: Sans- # token前缀字符
+  expiration: 86400 # 过期时间
+  antMatchers: /index/**,/login/**,/favicon.ico # 配置不需要认证的接口
 
 

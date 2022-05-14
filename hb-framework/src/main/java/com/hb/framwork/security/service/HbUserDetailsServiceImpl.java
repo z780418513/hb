@@ -38,7 +38,7 @@ public class HbUserDetailsServiceImpl implements UserDetailsService {
      * @param roles 角色权限 "admin;guest"
      * @return List<GrantedAuthority>
      */
-    private List<GrantedAuthority> grantedAuthorities(String roles) {
+    public List<GrantedAuthority> grantedAuthorities(String roles) {
         String[] roleList = roles.split(";");
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roleList) {
