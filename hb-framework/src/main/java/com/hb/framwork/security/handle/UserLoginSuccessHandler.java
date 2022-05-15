@@ -1,13 +1,12 @@
-package com.hb.framwork.security;
+package com.hb.framwork.security.handle;
 
-import com.alibaba.fastjson2.JSON;
 import com.hb.common.Result;
 import com.hb.common.utils.ServletUtils;
-import com.hb.framwork.security.utils.JwtTokenUtil;
+import com.hb.framwork.security.service.JwtTokenService;
+import com.hb.system.model.LoginUser;
 import com.hb.system.model.SysUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Resource
-    private JwtTokenUtil jwtTokenUtil;
-
+    private JwtTokenService jwtTokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         // 生成token
-        SysUser sysUser = (SysUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String token = jwtTokenUtil.generateToken(sysUser);
+        LoginUser user = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String token = jwtTokenService.generateToken(user);
 
         ServletUtils.renderString(response, Result.success("登录成功", token).toString());
 

@@ -7,17 +7,14 @@ import com.hb.common.vaild.ValidGroup;
 import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.expection.BusinessException;
 import com.hb.common.utils.RedisUtil;
-import com.hb.framwork.security.service.JwtAuthService;
-import com.hb.framwork.security.utils.JwtTokenUtil;
-import com.hb.system.model.LoginBody;
-import com.hb.system.model.SysUser;
+import com.hb.framwork.security.service.JwtTokenService;
+import com.hb.system.model.LoginUser;
 import com.wf.captcha.SpecCaptcha;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +30,9 @@ public class SysLoginController {
     @Resource
     private RedisUtil redisUtil;
     @Resource
-    private JwtAuthService jwtAuthService;
+    private AuthenticationManager authenticationManager;
+    @Resource
+    private JwtTokenService jwtTokenService;
 
     /**
      * 用户登录
@@ -42,12 +41,20 @@ public class SysLoginController {
      * @return
      */
     @PostMapping("/user/login")
-    public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user) {
+    public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginUser user) {
         // 校验验证码
 //        checkCaptcha(user);
 
         // 登录并获得验证码
-        String token = jwtAuthService.login(user.getUsername(), user.getPassword());
+        //使用用户名密码进行登录验证
+        UsernamePasswordAuthenticationToken upToken =
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        Authentication authentication = authenticationManager.authenticate(upToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //生成JWT
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        String token = jwtTokenService.generateToken(user);
 
         // 可以拿到用户登录信息,并对应做处理
         System.out.println(token);
@@ -55,16 +62,6 @@ public class SysLoginController {
     }
 
 
-    /**
-     * 刷新token
-     *
-     * @param token
-     * @return
-     */
-    @PostMapping("/token/refresh")
-    public Result refresh(@RequestHeader("${jwt.header}") String token) {
-        return Result.success(jwtAuthService.refreshToken(token));
-    }
 
     /**
      * 获取验证码(过期时间1分钟)
@@ -88,7 +85,7 @@ public class SysLoginController {
      *
      * @param user
      */
-    public void checkCaptcha(LoginBody user) {
+    public void checkCaptcha(LoginUser user) {
         // 校验验证码
         if (StringUtils.isBlank(user.getUuid()) || StringUtils.isBlank(user.getCaptcha())) {
             throw new BusinessException(BusinessExceptionEnum.CAPTCHA_OR_UUID_NULL);

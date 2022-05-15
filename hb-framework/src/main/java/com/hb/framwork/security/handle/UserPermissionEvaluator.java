@@ -1,4 +1,4 @@
-package com.hb.framwork.security;
+package com.hb.framwork.security.handle;
 
 import com.hb.framwork.security.service.HbUserDetailsServiceImpl;
 import com.hb.system.model.SysUser;

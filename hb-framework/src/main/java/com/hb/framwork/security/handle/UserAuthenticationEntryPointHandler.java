@@ -1,4 +1,4 @@
-package com.hb.framwork.security;
+package com.hb.framwork.security.handle;
 
 import com.alibaba.fastjson2.JSON;
 import com.hb.common.Result;

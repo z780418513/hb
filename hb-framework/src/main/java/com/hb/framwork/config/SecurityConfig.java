@@ -1,13 +1,12 @@
 package com.hb.framwork.config;
 
 import com.hb.framwork.security.*;
-import com.hb.framwork.security.service.HbUserDetailsServiceImpl;
+import com.hb.framwork.security.handle.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -82,6 +81,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return handler;
     }
 
+    @Bean
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
+        return new JwtAuthenticationTokenFilter();
+    }
+
 
     /**
      * 解决 无法直接注入 AuthenticationManager
@@ -127,7 +131,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 配置没有权限自定义处理类
                 .exceptionHandling().accessDeniedHandler(userAuthAccessDeniedHandler).and()
-
+                // 自定义jwt过滤器
+                .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
 
                 // 过滤请求
                 .authorizeRequests()
@@ -145,17 +150,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 禁用缓存
                 .headers().cacheControl();
 
-        http            // 自定义jwt过滤器
-                .addFilter(new JwtAuthenticationTokenFilter(authenticationManagerBean()));
-
-
     }
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        // 放行static下的css和img的静态资源
-//        web.ignoring()
-//                .antMatchers("/css/**")
-//                .antMatchers("/img/**");
-//    }
 }

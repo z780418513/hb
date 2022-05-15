@@ -1,9 +1,9 @@
 package com.hb.framwork.security;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.hb.framwork.config.JWTConfig;
+import com.hb.common.constants.SysConstant;
 import com.hb.framwork.security.service.HbUserDetailsServiceImpl;
-import com.hb.framwork.security.utils.JwtTokenUtil;
+import com.hb.framwork.security.service.JwtTokenService;
 import com.hb.system.model.SysUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -30,35 +30,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component
+
 @Slf4j
-@EnableConfigurationProperties(JWTConfig.class)
-public class JwtAuthenticationTokenFilter extends BasicAuthenticationFilter {
-    public JwtAuthenticationTokenFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
-    }
+public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Resource
-    HbUserDetailsServiceImpl userDetailsService;
+    private JwtTokenService jwtTokenService;
 
-    @Resource
-    JwtTokenUtil jwtTokenUtil;
-
-    @Resource
-    private JWTConfig jwtConfig;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         // 获取请求头中JWT的Token
-        String tokenHeader = request.getHeader(jwtConfig.getTokenHeader());
-        if (null != tokenHeader && tokenHeader.startsWith(jwtConfig.getTokenPrefix())) {
+        String tokenHeader = request.getHeader(jwtTokenService.getHeader());
+        if (null != tokenHeader && tokenHeader.startsWith(SysConstant.TOKEN_PREFIX)) {
             try {
                 // 截取JWT前缀
-                String token = tokenHeader.replace(jwtConfig.getTokenHeader(), "");
+                String token = tokenHeader.replace(jwtTokenService.getHeader(), "");
                 // 解析JWT
                 Claims claims = Jwts.parser()
-                        .setSigningKey(jwtConfig.getSecret())
+                        .setSigningKey(jwtTokenService.getSecret())
                         .parseClaimsJws(token)
                         .getBody();
                 // 获取用户名
