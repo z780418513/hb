@@ -8,20 +8,21 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
 @Component
+@EnableConfigurationProperties(JWTConfig.class)
 public class JwtTokenUtil {
 
-    private String secret;
-    private Long expiration;
-    private String header;
-
+    @Resource
+    private JWTConfig jwtConfig;
 
     /**
      * 生成token令牌
@@ -43,9 +44,9 @@ public class JwtTokenUtil {
                 // 自定义属性 放入用户拥有权限
                 .claim("authorities", JSONObject.toJSONString(sysUser.getAuthorities()))
                 // 失效时间
-                .setExpiration(new Date(System.currentTimeMillis() + JWTConfig.expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getExpiration()))
                 // 签名算法和密钥
-                .signWith(SignatureAlgorithm.HS512, JWTConfig.secret)
+                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
         return token;
     }
@@ -57,10 +58,10 @@ public class JwtTokenUtil {
      * @return 令牌
      */
     private String generateToken(Map<String, Object> claims) {
-        Date expirationDate = new Date(System.currentTimeMillis() + expiration);
+        Date expirationDate = new Date(System.currentTimeMillis() + jwtConfig.getExpiration());
         return Jwts.builder().setClaims(claims)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
     }
 
@@ -139,7 +140,7 @@ public class JwtTokenUtil {
     private Claims getClaimsFromToken(String token) {
         Claims claims;
         try {
-            claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            claims = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token).getBody();
         } catch (Exception e) {
             claims = null;
         }

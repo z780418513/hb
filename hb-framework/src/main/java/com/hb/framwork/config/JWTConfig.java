@@ -12,28 +12,27 @@ import org.springframework.stereotype.Component;
 @Data
 @Getter
 @Setter
-@Component
-@ConfigurationProperties(prefix = "jwt")
+@ConfigurationProperties(prefix = "jwt.config")
 public class JWTConfig {
     /**
      * 密钥KEY
      */
-    public static String secret;
+    private String secret;
     /**
      * TokenKey
      */
-    public static String tokenHeader;
+    private String tokenHeader;
     /**
      * Token前缀字符
      */
-    public static String tokenPrefix;
+    private String tokenPrefix;
     /**
      * 过期时间
      */
-    public static Integer expiration;
+    private Integer expiration;
     /**
      * 不需要认证的接口
      */
-    public static String antMatchers;
+    private String antMatchers;
 
 }

@@ -115,7 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().authenticationEntryPoint(authenticationEntryPoint).and()
 
                 // 配置登录地址
-                .formLogin().loginProcessingUrl("/user/login")
+                .formLogin()
                 // 登录成功处理拦截器
                 .successHandler(authenticationSuccessHandler)
                 // 登录失败处理拦截器
