@@ -2,10 +2,8 @@ package com.hb.framwork.config;
 
 
 import com.hb.framwork.security.handle.*;
-import com.hb.framwork.security.provider.UsernamePasswordAuthenticationProvider;
 import com.hb.framwork.security.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
 import javax.annotation.Resource;
 
@@ -65,10 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
-    @Bean
-    public UsernamePasswordAuthenticationProvider usernamePasswordAuthenticationProvider() {
-        return new UsernamePasswordAuthenticationProvider(userDetailsServiceImpl, passwordEncoder());
-    }
 
 
 //    /**
@@ -104,8 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 这里可启用我们自己的登陆验证逻辑
-//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        auth.authenticationProvider(usernamePasswordAuthenticationProvider());
+        auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -115,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().authenticationEntryPoint(userAuthenticationEntryPointHandler).and()
 
                 // 配置登录地址
-                .formLogin().loginProcessingUrl("/user/login")
+                .formLogin()
                 // 登录成功处理拦截器
                 .successHandler(userLoginSuccessHandler)
                 // 登录失败处理拦截器
@@ -128,7 +120,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 配置没有权限自定义处理类
                 .exceptionHandling().accessDeniedHandler(userAuthAccessDeniedHandler).and()
                 // 自定义jwt过滤器
-//                .addFilterBefore(jwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+
 
                 // 过滤请求
                 .authorizeRequests()
