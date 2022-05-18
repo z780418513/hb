@@ -15,8 +15,11 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author hanbaolaoba
+ */
 @Service
-public class HbUserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     @Resource
     private SysUserMapper userMapper;
 

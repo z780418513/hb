@@ -9,6 +9,7 @@ import com.hb.common.expection.BusinessException;
 import com.hb.common.utils.RedisUtil;
 import com.hb.framwork.security.service.JwtTokenService;
 import com.hb.system.model.LoginUser;
+import com.hb.system.model.SysUser;
 import com.wf.captcha.SpecCaptcha;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,7 +42,7 @@ public class SysLoginController {
      * @return
      */
     @PostMapping("/user/login")
-    public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginUser user) {
+    public Result login(@RequestBody LoginUser user) {
         // 校验验证码
 //        checkCaptcha(user);
 
@@ -52,15 +53,8 @@ public class SysLoginController {
         Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        //生成JWT
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        String token = jwtTokenService.generateToken(user);
-
-        // 可以拿到用户登录信息,并对应做处理
-        System.out.println(token);
-        return Result.success(token);
+        return Result.success();
     }
-
 
 
     /**

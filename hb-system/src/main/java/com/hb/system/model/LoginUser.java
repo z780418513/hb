@@ -14,10 +14,8 @@ import java.util.Set;
 public class LoginUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotBlank(message = "用户名不能为空", groups = {ValidGroup.Search.class})
     private String username;
 
-    @NotBlank(message = "密码不能为空", groups = {ValidGroup.Search.class})
     private String password;
 
     private String uuid;

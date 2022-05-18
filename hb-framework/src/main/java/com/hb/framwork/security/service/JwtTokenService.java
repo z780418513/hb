@@ -2,6 +2,7 @@ package com.hb.framwork.security.service;
 
 import com.hb.common.constants.SysConstant;
 import com.hb.system.model.LoginUser;
+import com.hb.system.model.SysUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,9 +12,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @author hanbaolaoba
+ */
 @Data
 @Service
 public class JwtTokenService {
@@ -42,10 +48,15 @@ public class JwtTokenService {
      * @param user 用户
      * @return 令token牌
      */
-    public String generateToken(LoginUser user) {
-        String uuid = UUID.randomUUID().toString();
+    public String generateToken(SysUser user) {
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        // 用户名使用sub
+        claims.put("sub", user.getUsername());
+        claims.put("password", user.getPassword());
+        claims.put("authorities", user.getAuthorities());
 
-        return "token";
+        return createToken(claims);
     }
 
     /**
@@ -56,7 +67,13 @@ public class JwtTokenService {
      */
     private String createToken(Map<String, Object> claims) {
         String token = Jwts.builder()
+                // 设置jti(JWT ID)：是JWT的唯一标识，根据业务需要，这个可以设置为一个不重复的值，主要用来作为一次性token,从而回避重放攻击。
+                .setId(UUID.randomUUID().toString())
                 .setClaims(claims)
+                .setSubject("xxx")
+                // 签发时间
+                .setIssuedAt(new Date())
+                // 设置签名使用的签名算法和签名使用的秘钥
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
         return token;
     }
@@ -67,7 +84,7 @@ public class JwtTokenService {
      * @param token 令牌
      * @return 数据声明
      */
-    private Claims parseToken(String token) {
+    public Claims parseToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
@@ -98,7 +115,6 @@ public class JwtTokenService {
         }
         return token;
     }
-
 
 
 }

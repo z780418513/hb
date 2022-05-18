@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 登录成功处理类
+ * @author hanbaolaoba
  */
 @Component
 public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -25,7 +26,7 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         // 生成token
-        LoginUser user = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SysUser user = (SysUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String token = jwtTokenService.generateToken(user);
 
         ServletUtils.renderString(response, Result.success("登录成功", token).toString());

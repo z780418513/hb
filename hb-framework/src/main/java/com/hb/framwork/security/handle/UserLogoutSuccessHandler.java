@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * 用户登出类
+ * @author hanbaolaoba
  */
 @Component
 public class UserLogoutSuccessHandler implements LogoutSuccessHandler {

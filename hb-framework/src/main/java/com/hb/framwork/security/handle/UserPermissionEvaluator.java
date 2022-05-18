@@ -1,6 +1,6 @@
 package com.hb.framwork.security.handle;
 
-import com.hb.framwork.security.service.HbUserDetailsServiceImpl;
+import com.hb.framwork.security.service.UserDetailsServiceImpl;
 import com.hb.system.model.SysUser;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -17,8 +17,8 @@ import java.util.Set;
  */
 @Component
 public class UserPermissionEvaluator implements PermissionEvaluator {
-    @Resource
-    private HbUserDetailsServiceImpl sysUserService;
+
+
     /**
      * hasPermission鉴权方法
      * 这里仅仅判断PreAuthorize注解中的权限表达式
