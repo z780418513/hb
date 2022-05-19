@@ -38,7 +38,7 @@ public class SysLoginController {
 
 
     /**
-     * 用户登录
+     * 用户名密码登录
      *
      * @param user
      * @return
@@ -50,13 +50,19 @@ public class SysLoginController {
             throw new BusinessException("登入方式错误");
         }
         // 手机号登入
-        Authentication token = new UsernamePasswordAuthenticationToken(user.getPhone(), user.getMsgCode());
+        Authentication token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return Result.success();
     }
 
+    /**
+     * 手机短信登入
+     *
+     * @param user
+     * @return
+     */
     @PostMapping("/mobile/login")
     public Result mobileLogin(@RequestBody LoginUser user) {
         String loginType = user.getLoginType();
