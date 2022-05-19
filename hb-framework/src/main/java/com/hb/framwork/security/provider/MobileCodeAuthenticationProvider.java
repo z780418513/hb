@@ -1,9 +1,12 @@
 package com.hb.framwork.security.provider;
 
+import com.hb.framwork.security.service.UserDetailsServiceImpl;
 import com.hb.framwork.security.token.MobileCodeAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,7 +30,11 @@ public class MobileCodeAuthenticationProvider implements AuthenticationProvider 
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return null;
+        // 根据手机号查询用户信息
+
+        MobileCodeAuthenticationToken authenticationToken = new MobileCodeAuthenticationToken(
+                "phone", "msgCode", UserDetailsServiceImpl.grantedAuthorities("ROLE_ADMIN"));
+        return authenticationToken;
     }
 
 

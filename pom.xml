@@ -22,6 +22,8 @@
         <oss-version>3.14.1</oss-version>
         <captcha.version>1.6.2</captcha.version>
         <jjwt.version>0.9.0</jjwt.version>
+        <tea-openapi.version>0.2.4</tea-openapi.version>
+        <dysmsapi20170525.version>2.0.9</dysmsapi20170525.version>
     </properties>
 
     <dependencyManagement>
@@ -73,6 +75,19 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+
+            <!--阿里OpenAPI -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>tea-openapi</artifactId>
+                <version>${tea-openapi.version}</version>
+            </dependency>
+            <!--阿里云短信-->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>dysmsapi20170525</artifactId>
+                <version>${dysmsapi20170525.version}</version>
             </dependency>
 
             <dependency>

@@ -57,6 +57,18 @@
             <artifactId>jjwt</artifactId>
         </dependency>
 
+        <!--阿里OpenAPI -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>tea-openapi</artifactId>
+        </dependency>
+
+        <!--阿里云短信-->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>dysmsapi20170525</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

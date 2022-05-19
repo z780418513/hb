@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -34,8 +35,7 @@ public class SysLoginController {
     private RedisUtil redisUtil;
     @Resource
     private AuthenticationManager authenticationManager;
-    @Resource
-    private JwtTokenService jwtTokenService;
+
 
     /**
      * 用户登录
@@ -52,13 +52,34 @@ public class SysLoginController {
             token = new MobileCodeAuthenticationToken(user.getPhone(), user.getMsgCode());
         } else if ("1".equals(loginType)) {
             token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-        }else {
+        } else {
             throw new BusinessException("登入方式错误");
         }
         // 验证登入方式
         Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        return Result.success();
+    }
+
+
+    /**
+     * 发送手机短信 3分钟
+     *
+     * @param phone
+     * @return
+     */
+    @PostMapping("/send/msgCode")
+    public Result sendMsgCode(@RequestParam String phone) {
+        String msgCode = (String) redisUtil.get(SysConstant.PHONE_PREFIX + phone);
+        if (Objects.nonNull(msgCode)) {
+            throw new BusinessException("请勿频繁发送验证码短信---");
+        }
+        // 生成4位验证短信
+        int randomCode = (int) ((Math.random() * 9 + 1) * 1000);
+        redisUtil.set(SysConstant.PHONE_PREFIX + phone, randomCode + "", 60 * 3L);
+        // TODO 发送短信
+
         return Result.success();
     }
 

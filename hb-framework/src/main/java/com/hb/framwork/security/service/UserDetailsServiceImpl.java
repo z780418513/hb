@@ -38,10 +38,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     /**
      * 自定义实现权限转换
+     *
      * @param roles 角色权限 "admin;guest"
      * @return List<GrantedAuthority>
      */
-    public List<GrantedAuthority> grantedAuthorities(String roles) {
+    public static List<GrantedAuthority> grantedAuthorities(String roles) {
         String[] roleList = roles.split(";");
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
         for (String role : roleList) {

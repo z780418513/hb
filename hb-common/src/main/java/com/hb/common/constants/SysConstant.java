@@ -15,4 +15,12 @@ public class SysConstant {
      * 令牌前缀
      */
     public static final String TOKEN_PREFIX = "Bearer ";
+
+
+    /**
+     * 手机短信前缀
+     */
+    public static final String PHONE_PREFIX = "phone:";
+
+
 }
