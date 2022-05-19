@@ -2,6 +2,7 @@ package com.hb.framwork.config;
 
 
 import com.hb.framwork.security.handle.*;
+import com.hb.framwork.security.provider.MobileCodeAuthenticationProvider;
 import com.hb.framwork.security.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,18 +21,6 @@ import javax.annotation.Resource;
  */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    /**
-     * 登录成功处理类
-     */
-    @Resource
-    private UserLoginSuccessHandler userLoginSuccessHandler;
-
-    /**
-     * 登录失败处理类
-     */
-    @Resource
-    private UserLoginFailureHandler userLoginFailureHandler;
 
     /**
      * 自定义注销成功处理器
@@ -59,9 +48,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * UserDetailsServiceImpl
+     */
     @Resource
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
+    /**
+     * 手机登入认证提供者
+     */
+    @Resource
+    private MobileCodeAuthenticationProvider mobileCodeAuthenticationProvider;
+
+    /**
+     * AuthenticationManager
+     *
+     * @return
+     * @throws Exception
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
 
 //    /**
@@ -76,19 +85,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     /**
-     * 解决 无法直接注入 AuthenticationManager
-     *
-     * @return
-     * @throws Exception
-     */
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-
-    /**
      * 配置登录验证逻辑
      *
      * @param auth
@@ -98,6 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 这里可启用我们自己的登陆验证逻辑
         auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
+        auth.authenticationProvider(mobileCodeAuthenticationProvider);
     }
 
     @Override
@@ -105,14 +102,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // 用户未登录处理类
                 .httpBasic().authenticationEntryPoint(userAuthenticationEntryPointHandler).and()
-
-                // 配置登录地址
-                .formLogin()
-                // 登录成功处理拦截器
-                .successHandler(userLoginSuccessHandler)
-                // 登录失败处理拦截器
-                .failureHandler(userLoginFailureHandler).and()
-
                 // 配置退出登录
                 .logout().logoutUrl("/user/logout")
                 .logoutSuccessHandler(userLogoutSuccessHandler).and()

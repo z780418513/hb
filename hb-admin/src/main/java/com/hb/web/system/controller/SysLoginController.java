@@ -8,6 +8,7 @@ import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.expection.BusinessException;
 import com.hb.common.utils.RedisUtil;
 import com.hb.framwork.security.service.JwtTokenService;
+import com.hb.framwork.security.token.MobileCodeAuthenticationToken;
 import com.hb.system.model.LoginUser;
 import com.hb.system.model.SysUser;
 import com.wf.captcha.SpecCaptcha;
@@ -20,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -43,51 +45,22 @@ public class SysLoginController {
      */
     @PostMapping("/user/login")
     public Result login(@RequestBody LoginUser user) {
-        // 校验验证码
-//        checkCaptcha(user);
+        String loginType = user.getLoginType();
+        Authentication token;
+        // 手机号登入
+        if ("2".equals(loginType)) {
+            token = new MobileCodeAuthenticationToken(user.getPhone(), user.getMsgCode());
+        } else if ("1".equals(loginType)) {
+            token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        }else {
+            throw new BusinessException("登入方式错误");
+        }
+        // 验证登入方式
+        Authentication authentication = authenticationManager.authenticate(token);
 
-        // 登录并获得验证码
-        //使用用户名密码进行登录验证
-        UsernamePasswordAuthenticationToken upToken =
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-        Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         return Result.success();
     }
 
 
-    /**
-     * 获取验证码(过期时间1分钟)
-     *
-     * @return
-     */
-    @GetMapping("/captcha")
-    public Result getCaptcha() {
-        // 输出验证码
-        SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
-        String verCode = specCaptcha.text().toLowerCase();
-        String uuid = UUID.randomUUID().toString();
-        redisUtil.set(SysConstant.CAPTCHA_PREFIX + uuid, verCode, 60);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("uuid", uuid);
-        return Result.success(map);
-    }
-
-    /**
-     * 校验验证码
-     *
-     * @param user
-     */
-    public void checkCaptcha(LoginUser user) {
-        // 校验验证码
-        if (StringUtils.isBlank(user.getUuid()) || StringUtils.isBlank(user.getCaptcha())) {
-            throw new BusinessException(BusinessExceptionEnum.CAPTCHA_OR_UUID_NULL);
-        }
-        String captchaCode = (String) redisUtil.get(SysConstant.CAPTCHA_PREFIX + user.getUuid());
-        redisUtil.del(SysConstant.CAPTCHA_PREFIX + user.getUuid());
-        if (!user.getCaptcha().equals(captchaCode)) {
-            throw new BusinessException(BusinessExceptionEnum.CODE_OR_PASSWORD_ERROR);
-        }
-    }
 }

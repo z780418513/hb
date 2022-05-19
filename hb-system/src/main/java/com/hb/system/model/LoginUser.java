@@ -12,30 +12,39 @@ import java.util.Set;
  */
 @Data
 public class LoginUser implements Serializable {
+
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 用户名
+     */
     private String username;
-
+    /**
+     * 密码
+     */
     private String password;
-
-    private String uuid;
-
-    private String captcha;
-
+    /**
+     * 手机号
+     */
+    private String phone;
+    /**
+     * 短信验证码
+     */
+    private String msgCode;
     /**
      * 登录时间
      */
     private Long loginTime;
-
     /**
      * 过期时间
      */
     private Long expireTime;
-
-
     /**
      * 权限列表
      */
     private Set<String> permissions;
+    /**
+     * 登入方式 1=用户名密码,2=手机短信
+     */
+    private String loginType;
 
 }

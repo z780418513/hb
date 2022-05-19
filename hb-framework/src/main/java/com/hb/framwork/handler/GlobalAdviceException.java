@@ -1,6 +1,12 @@
 package com.hb.framwork.handler;
 
 import com.hb.common.Result;
+import com.hb.common.utils.ServletUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +22,7 @@ import java.util.List;
  * @author hanbaolaoba
  */
 @ControllerAdvice
+@Slf4j
 public class GlobalAdviceException extends Exception {
 
     /**
@@ -44,4 +51,31 @@ public class GlobalAdviceException extends Exception {
         String msg = allErrors.get(0).getDefaultMessage();
         return Result.error(msg);
     }
+
+
+    /**
+     * 捕获认证异常
+     *
+     * @param authenticationException 认证异常
+     * @return
+     */
+    @ResponseBody
+    @ExceptionHandler(value = AuthenticationException.class)
+    public Result notValidException(AuthenticationException authenticationException) {
+        String msg = "";
+        if (authenticationException instanceof UsernameNotFoundException) {
+            log.info("【登录失败】" + authenticationException.getMessage());
+            msg = "用户名不存在";
+        }
+        if (authenticationException instanceof LockedException) {
+            log.info("【登录失败】" + authenticationException.getMessage());
+            msg = "用户被冻结";
+        }
+        if (authenticationException instanceof BadCredentialsException) {
+            log.info("【登录失败】" + authenticationException.getMessage());
+            msg = "用户名密码不正确";
+        }
+        return Result.error(msg);
+    }
+
 }
