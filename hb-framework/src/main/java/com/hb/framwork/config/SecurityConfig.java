@@ -114,7 +114,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 过滤请求
                 .authorizeRequests()
                 // 登录请求放行 允许匿名访问
-                .antMatchers("/user/login", "/captcha","/send/msgCode").permitAll()
+                .antMatchers("/user/login", "/send/msgCode", "/mobile/login").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated().and()
 

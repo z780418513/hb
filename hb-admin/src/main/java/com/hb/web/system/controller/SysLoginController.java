@@ -46,16 +46,25 @@ public class SysLoginController {
     @PostMapping("/user/login")
     public Result login(@RequestBody LoginUser user) {
         String loginType = user.getLoginType();
-        Authentication token;
+        if (!"1".equals(loginType)) {
+            throw new BusinessException("登入方式错误");
+        }
         // 手机号登入
-        if ("2".equals(loginType)) {
-            token = new MobileCodeAuthenticationToken(user.getPhone(), user.getMsgCode());
-        } else if ("1".equals(loginType)) {
-            token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-        } else {
+        Authentication token = new UsernamePasswordAuthenticationToken(user.getPhone(), user.getMsgCode());
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return Result.success();
+    }
+
+    @PostMapping("/mobile/login")
+    public Result mobileLogin(@RequestBody LoginUser user) {
+        String loginType = user.getLoginType();
+        if (!"2".equals(loginType)) {
             throw new BusinessException("登入方式错误");
         }
         // 验证登入方式
+        Authentication token = new MobileCodeAuthenticationToken(user.getPhone(), user.getMsgCode());
         Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);

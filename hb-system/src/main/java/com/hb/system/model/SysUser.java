@@ -26,6 +26,9 @@ public class SysUser implements UserDetails {
     @TableField("password")
     private String password;
 
+    @TableField("phone")
+    private String phone;
+
     private String roles;
 
     private boolean enable;
