@@ -18,13 +18,29 @@
             <input type="password" placeholder="密码" name="password">
         </div>
         <div class="input-btn">
-            <input type="submit" value="登录" >
+            <input id="login-commit" type="submit" value="登录" >
         </div>
     </form>
     <div class="sign-up">
         还没有账户? <a href="#">立即注册</a>
     </div>
 </div>
+<script>
+    const btn = document.getElementById("login-commit");
+    btn.onclick = function () {
+        // 发送ajax请求
+        axios({
+            method: 'POST',
+            url: 'http://localhost:1026/user/login',
+            data:{
+                username:'hanbaolaoba',
+                password:'123456'
+            }
+        }).then(response =>{
+            console.log(response)
+        })
+    }
+</script>
 
 </body>
 </html>

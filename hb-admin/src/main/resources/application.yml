@@ -4,9 +4,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: 123456
     username: root
-    url: jdbc:mysql://124.220.180.141/hb
+    url: jdbc:mysql://127.0.0.1/hb
   redis:
-    host: 124.220.180.141
+    host: 127.0.0.1
 
 
 mybatis-plus:

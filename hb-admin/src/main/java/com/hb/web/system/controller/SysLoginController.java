@@ -7,6 +7,8 @@ import com.hb.common.ValidGroup;
 import com.hb.common.utils.RedisUtil;
 import com.hb.system.model.LoginBody;
 import com.wf.captcha.SpecCaptcha;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,8 @@ import java.util.UUID;
 
 @RestController
 public class SysLoginController {
+    public static final Logger log = LoggerFactory.getLogger(SysLoginController.class);
+
     @Resource
     private AuthenticationManager authenticationManager;
     @Resource
@@ -64,6 +68,7 @@ public class SysLoginController {
         redisUtil.set(SysConstant.CAPTCHA_PREFIX + uuid, verCode, 60);
         HashMap<String, Object> map = new HashMap<>();
         map.put("uuid", uuid);
+        log.info("【验证码】:{}", uuid);
         return Result.success(map);
 
     }

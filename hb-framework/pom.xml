@@ -12,6 +12,12 @@
     <artifactId>hb-framework</artifactId>
 
     <dependencies>
+        <!--mysql8-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.hb</groupId>
             <artifactId>hb-system</artifactId>
