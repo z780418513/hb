@@ -1,5 +1,8 @@
-package com.hb.common;
+package com.hb.common.constants;
 
+/**
+ * @author zhaochengshui
+ */
 public class SysConstant {
     /**
      * 验证码redis前缀

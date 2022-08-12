@@ -1,6 +1,5 @@
 package com.hb.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,6 +10,7 @@ import javax.annotation.Resource;
 
 /**
  * redis序列化配置
+ * @author zhaochengshui
  */
 @Configuration
 public class RedisConfiguration {

@@ -2,13 +2,12 @@ package com.hb.web.system.controller;
 
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.hb.common.Result;
-import com.hb.common.SysConstant;
-import com.hb.common.ValidGroup;
+import com.hb.common.core.Result;
+import com.hb.common.constants.SysConstant;
+import com.hb.common.core.ValidGroup;
 import com.hb.common.utils.RedisUtil;
 import com.hb.system.model.LoginBody;
 import com.wf.captcha.SpecCaptcha;
-import io.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,12 +41,12 @@ public class SysLoginController {
     @PostMapping("/user/login")
     public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user) {
         // 校验验证码
-        if (StringUtils.isNotBlank(user.getUuid())) {
+//        if (StringUtils.isNotBlank(user.getUuid())) {
             String captchaCode = (String) redisUtil.get(SysConstant.CAPTCHA_PREFIX + user.getUuid());
             redisUtil.del(SysConstant.CAPTCHA_PREFIX + user.getUuid());
             if (!user.getCaptcha().equals(captchaCode)) {
                 return Result.error("验证码错误");
-            }
+//            }
         }
         // 校验用户名密码
         Authentication authenticate = authenticationManager

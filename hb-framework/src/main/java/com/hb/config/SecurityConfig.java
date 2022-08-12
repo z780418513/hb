@@ -1,41 +1,27 @@
 package com.hb.config;
 
-import com.hb.security.CustomizeAuthenticationEntryPoint;
-import com.hb.security.CustomizeAuthenticationFailureHandler;
-import com.hb.security.CustomizeAuthenticationSuccessHandler;
 import com.hb.security.LoginAuthenticationProvider;
 import com.hb.service.HbUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 import javax.annotation.Resource;
 
+/**
+ * @author zhaochengshui
+ */
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     @Resource
     private HbUserDetailsService detailsService;
-
-    // 登录成功拦截器
-    @Resource
-    private CustomizeAuthenticationSuccessHandler authenticationSuccessHandler;
-
-    // 匿名用户访问无权限资源时的异常
-    @Resource
-    private CustomizeAuthenticationEntryPoint authenticationEntryPoint;
-
-    // 认证失败拦截器
-    @Resource
-    private CustomizeAuthenticationFailureHandler authenticationFailureHandler;
 
 
     /**
@@ -49,17 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * 解决 无法直接注入 AuthenticationManager
-     *
-     * @return
-     * @throws Exception
-     */
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 
     @Bean
     public LoginAuthenticationProvider loginAuthenticationProvider() {
@@ -70,49 +45,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    /**
-     * 用户认证配置
-     *
-     * @param auth
-     * @throws Exception
-     */
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(loginAuthenticationProvider());
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/ignore1", "/ignore2");
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-//                // 用户认证
-//                .authenticationProvider(authenticationProvider())
-                //关闭csrf
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+                // 关闭csrf
                 .csrf().disable()
                 // 认证失败处理器
-                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
-
-                .formLogin().permitAll()
-                // 登录成功处理拦截器
-                .successHandler(authenticationSuccessHandler)
-                // 登录失败处理拦截器
-                .failureHandler(authenticationFailureHandler).and()
-
+                .formLogin().permitAll().and()
                 // 过滤请求
                 .authorizeRequests()
                 // 登录请求放行 允许匿名访问
-                .antMatchers("/user/login","/captcha","/login.html").anonymous()
+                .antMatchers("/user/login", "/captcha", "/login.html").anonymous()
 
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated();
+                .anyRequest().authenticated().and().build();
 
 
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        // 放行static下的css和img的静态资源
-        web.ignoring()
-                .antMatchers("/css/**")
-                .antMatchers("/img/**");
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
+
 }

@@ -4,16 +4,22 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.hb.common.core.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author zhaochengshui
+ */
 @Data
 @TableName("sys_user")
-public class SysUser implements UserDetails {
+@EqualsAndHashCode(callSuper = true)
+public class SysUser extends BaseEntity implements UserDetails {
     @TableId(type = IdType.ASSIGN_UUID)
     private Long id;
 
@@ -23,10 +29,13 @@ public class SysUser implements UserDetails {
     @TableField("password")
     private String password;
 
+    @TableField(exist = false)
     private String roles;
+
     @TableField("is_enable")
     private boolean enable;
 
+    @TableField(exist = false)
     private List<GrantedAuthority> authorities;
 
     @Override
@@ -46,6 +55,7 @@ public class SysUser implements UserDetails {
 
     /**
      * 用户是启用还是禁用
+     *
      * @return this.enable
      */
     @Override
@@ -55,6 +65,7 @@ public class SysUser implements UserDetails {
 
     /**
      * 账号是否过期
+     *
      * @return 默认true
      */
     @Override
@@ -64,6 +75,7 @@ public class SysUser implements UserDetails {
 
     /**
      * 账户是否不被锁定
+     *
      * @return 默认true
      */
     @Override
@@ -73,6 +85,7 @@ public class SysUser implements UserDetails {
 
     /**
      * 用户的凭据（密码）是否未过期
+     *
      * @return 默认true
      */
     @Override

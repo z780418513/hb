@@ -1,6 +1,6 @@
 package com.hb.system.model;
 
-import com.hb.common.ValidGroup;
+import com.hb.common.core.ValidGroup;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
