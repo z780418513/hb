@@ -1,12 +1,14 @@
 package com.hb.web.system.controller;
 
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hb.common.Result;
 import com.hb.common.SysConstant;
 import com.hb.common.ValidGroup;
 import com.hb.common.utils.RedisUtil;
 import com.hb.system.model.LoginBody;
 import com.wf.captcha.SpecCaptcha;
+import io.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,17 +42,19 @@ public class SysLoginController {
     @PostMapping("/user/login")
     public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user) {
         // 校验验证码
-        String captchaCode = (String) redisUtil.get(SysConstant.CAPTCHA_PREFIX + user.getUuid());
-        redisUtil.del(SysConstant.CAPTCHA_PREFIX + user.getUuid());
-        if (!user.getCaptcha().equals(captchaCode)) {
-            return Result.error("验证码错误");
+        if (StringUtils.isNotBlank(user.getUuid())) {
+            String captchaCode = (String) redisUtil.get(SysConstant.CAPTCHA_PREFIX + user.getUuid());
+            redisUtil.del(SysConstant.CAPTCHA_PREFIX + user.getUuid());
+            if (!user.getCaptcha().equals(captchaCode)) {
+                return Result.error("验证码错误");
+            }
         }
         // 校验用户名密码
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         // 可以拿到用户登录信息,并对应做处理
-        System.out.println(authenticate);
-        return Result.success();
+        log.info("认证信息:{}", authenticate);
+        return Result.success("登录成功");
     }
 
 

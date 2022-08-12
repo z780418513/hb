@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 登录失败拦截器 登入失败后执行
+ * @author zhaochengshui
  */
 @Component
 public class CustomizeAuthenticationFailureHandler implements AuthenticationFailureHandler {

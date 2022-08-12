@@ -1,6 +1,7 @@
 package com.hb.service;
 
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hb.system.mapper.SysUserMapper;
 import com.hb.system.model.SysUser;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,12 +36,16 @@ public class HbUserDetailsService implements UserDetailsService {
 
     /**
      * 自定义实现权限转换
-     * @param roles 角色权限 "admin;guest"
+     *
+     * @param roles 角色权限 "admin,guest"
      * @return List<GrantedAuthority>
      */
     private List<GrantedAuthority> grantedAuthorities(String roles) {
-        String[] roleList = roles.split(";");
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+        if (StringUtils.isBlank(roles)) {
+            return authorities;
+        }
+        String[] roleList = roles.split(",");
         for (String role : roleList) {
             authorities.add(new SimpleGrantedAuthority(role));
         }

@@ -5,14 +5,31 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
+/**
+ * @author zhaochengshui
+ */
 @Data
 public class LoginBody {
+
+    /**
+     * 用户名
+     */
     @NotBlank(message = "用户名不能为空", groups = {ValidGroup.Search.class})
     private String username;
+
+    /**
+     * 密码
+     */
     @NotBlank(message = "密码不能为空", groups = {ValidGroup.Search.class})
     private String password;
-    @NotBlank(message = "uuid不能为空", groups = {ValidGroup.Search.class})
+
+    /**
+     * uuid
+     */
     private String uuid;
-    @NotBlank(message = "验证码不能为空", groups = {ValidGroup.Search.class})
+
+    /**
+     * 验证码
+     */
     private String captcha;
 }

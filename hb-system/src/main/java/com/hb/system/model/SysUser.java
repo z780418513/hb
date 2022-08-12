@@ -24,7 +24,7 @@ public class SysUser implements UserDetails {
     private String password;
 
     private String roles;
-
+    @TableField("is_enable")
     private boolean enable;
 
     private List<GrantedAuthority> authorities;
