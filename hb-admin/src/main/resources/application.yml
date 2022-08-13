@@ -21,3 +21,8 @@ mybatis-plus:
 server:
   port: 1026 #端口
 
+# JWT配置
+jwt:
+  header: JWTheaderName # 请求头中的名字
+  secret: aaaxxx # 秘钥
+  expiration: 3600000 # 过期时间
