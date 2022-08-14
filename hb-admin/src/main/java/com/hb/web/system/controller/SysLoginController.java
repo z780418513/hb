@@ -32,8 +32,6 @@ public class SysLoginController {
     public static final Logger log = LoggerFactory.getLogger(SysLoginController.class);
 
     @Resource
-    private AuthenticationManager authenticationManager;
-    @Resource
     private RedisUtil redisUtil;
     @Resource
     private JwtAuthService jwtAuthService;

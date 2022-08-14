@@ -1,0 +1,1 @@
+1.将token存放到redis中去，这样才能单点登录，具体原因看这个  https://blog.csdn.net/HellHellNo/article/details/119394553
