@@ -1,6 +1,8 @@
 package com.hb.service;
 
+import com.hb.common.constants.SysConstant;
 import com.hb.common.utils.JwtTokenUtil;
+import com.hb.common.utils.RedisUtil;
 import com.hb.system.model.SysUser;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,8 @@ public class JwtAuthService {
     private AuthenticationManager authenticationManager;
     @Resource
     private JwtTokenUtil jwtTokenUtil;
+    @Resource
+    private RedisUtil redisUtil;
 
     /**
      * 登录并获得token
@@ -38,7 +42,9 @@ public class JwtAuthService {
 
         //生成JWT
         SysUser sysUser = (SysUser) authentication.getPrincipal();
-        return jwtTokenUtil.generateToken(sysUser.getUsername());
+        String token = jwtTokenUtil.generateToken(sysUser.getUsername());
+        redisUtil.set(SysConstant.TOKEN_PREFIX + username, token);
+        return token;
     }
 
     /**
