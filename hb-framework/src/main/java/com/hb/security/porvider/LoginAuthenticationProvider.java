@@ -1,4 +1,4 @@
-package com.hb.security;
+package com.hb.security.porvider;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;

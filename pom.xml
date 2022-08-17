@@ -22,7 +22,7 @@
         <oss-version>3.14.1</oss-version>
         <captcha.version>1.6.2</captcha.version>
         <spring-dependencies-version>2.7.2</spring-dependencies-version>
-        <jjwt.version>0.9.0</jjwt.version>
+        <jwt.version>4.0.0</jwt.version>
 
     </properties>
 
@@ -74,10 +74,11 @@
 
             <!--JWT-->
             <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt</artifactId>
-                <version>${jjwt.version}</version>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>${jwt.version}</version>
             </dependency>
+
 
             <dependency>
                 <groupId>com.hb</groupId>

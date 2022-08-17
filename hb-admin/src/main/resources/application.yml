@@ -23,6 +23,7 @@ server:
 
 # JWT配置
 jwt:
-  header: JWTheaderName # 请求头中的名字
+  token-header: "Bearer " # 令牌头
   secret: aaaxxx # 秘钥
-  expiration: 3600000 # 过期时间
+  expiration: 1 # 认证令牌过期时间(小时)
+  refresh-expiration: 24 # 刷新令牌过期时间(小时)

@@ -12,7 +12,12 @@ public enum BusinessExceptionEnum implements BaseEnum {
     /*验证码错误*/
     CODE_OR_PASSWORD_ERROR(2000, "验证码错误"),
     /*密码错误*/
-    PASSWORD_ERROR(2001, "密码错误");
+    PASSWORD_ERROR(2001, "密码错误"),
+    /*令牌验证失败*/
+    TOKEN_VALID_FAIL(2002, "令牌验证失败"),
+    /*非法令牌*/
+    TOKEN_ILLEGALITY(2003, "非法令牌"),
+    ;
 
     private final Integer code;
     private final String msg;

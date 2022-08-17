@@ -49,7 +49,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -75,9 +74,10 @@
         </dependency>
 
         <!-- JWT依赖 -->
+        <!--JWT-->
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
         </dependency>
 
 

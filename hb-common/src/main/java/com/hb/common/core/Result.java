@@ -2,6 +2,7 @@ package com.hb.common.core;
 
 
 import com.hb.common.enums.BusinessExceptionEnum;
+import com.hb.common.exceptions.BusinessException;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
@@ -116,6 +117,15 @@ public class Result extends HashMap<String, Object> {
      */
     public static Result error(BusinessExceptionEnum exceptionEnum) {
         return Result.error(exceptionEnum.getCode(), exceptionEnum.getMsg());
+    }
+
+    /**
+     * 返回错误消息
+     *
+     * @return
+     */
+    public static Result error(BusinessException e) {
+        return Result.error(e.getMessage());
     }
 
     /**

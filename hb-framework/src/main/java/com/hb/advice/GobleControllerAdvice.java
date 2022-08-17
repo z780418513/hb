@@ -2,6 +2,7 @@ package com.hb.advice;
 
 import com.hb.common.core.Result;
 import com.hb.common.enums.BusinessExceptionEnum;
+import com.hb.common.exceptions.BusinessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -66,6 +67,18 @@ public class GobleControllerAdvice {
         }
         log.error("authenticationException  ===> ", e);
         return Result.error(e.getMessage());
+    }
+
+    /**
+     * 业务异常 BusinessException 拦截器
+     *
+     * @param e BusinessException
+     * @return Result
+     */
+    @ExceptionHandler({BusinessException.class})
+    @ResponseBody
+    public Result bindExceptionHandler(BusinessException e) {
+        return Result.error(e);
     }
 
 }

@@ -1,6 +1,7 @@
-package com.hb.config;
+package com.hb.security.config;
 
-import com.hb.security.LoginAuthenticationProvider;
+import com.hb.security.filter.TokenAuthenticateFilter;
+import com.hb.security.porvider.LoginAuthenticationProvider;
 import com.hb.service.HbUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
 
@@ -37,6 +39,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public TokenAuthenticateFilter tokenAuthenticateFilter() {
+        return new TokenAuthenticateFilter();
+    }
+
 
     @Bean
     public LoginAuthenticationProvider loginAuthenticationProvider() {
@@ -57,14 +64,16 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 // 关闭csrf
-                .csrf().disable().build();
-//                // 过滤请求
-//                .authorizeRequests()
-//                // 登录请求放行 允许匿名访问
-//                .antMatchers("/user/login", "/captcha", "/login.html").anonymous()
-//
-//                // 除上面外的所有请求全部需要鉴权认证
-//                .anyRequest().authenticated().and().build();
+                .csrf().disable()
+                // 过滤请求
+                .authorizeRequests()
+                // 登录请求放行 允许匿名访问
+                .antMatchers("/user/login", "/captcha").anonymous()
+                // 除上面外的所有请求全部需要鉴权认证
+                .anyRequest().authenticated().and()
+                // 自定义过滤器
+                .addFilterBefore(tokenAuthenticateFilter(), UsernamePasswordAuthenticationFilter.class)
+                .build();
 
 
     }
