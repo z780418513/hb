@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -41,7 +42,9 @@ public class SysLoginController {
      * @return
      */
     @PostMapping("/user/login")
-    public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user) {
+    public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user, HttpServletRequest request) {
+        System.out.println(request);
+        redisUtil.lSet("bc:black","");
         // 校验验证码
         if (StringUtils.isNotBlank(user.getUuid())) {
             String captchaCode = (String) redisUtil.get(SecurityConstants.CAPTCHA_PREFIX + user.getUuid());

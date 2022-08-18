@@ -2,9 +2,7 @@ package com.hb.service;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.hb.system.mapper.SysUserMapper;
 import com.hb.system.model.SysUser;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,9 +19,10 @@ import java.util.List;
 
 /**
  * @author zhaochengshui
+ * @description UserDetailsService实现类
  */
 @Service
-public class HbUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     @Resource
     private SysUserMapper userMapper;
 

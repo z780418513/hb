@@ -31,5 +31,10 @@ public class SecurityConstants {
      */
     public static final String CAPTCHA_PREFIX = "captcha:";
 
+    /**
+     * 认证令牌 请求头标识
+     */
+    public static final String USER_KEY_HEADER_FLAG = "userKey";
+
 
 }

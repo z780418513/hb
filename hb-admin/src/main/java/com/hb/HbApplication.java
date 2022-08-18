@@ -4,6 +4,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @author zhaochengshui
+ */
 @SpringBootApplication
 @MapperScan("com.hb.system.mapper")
 public class HbApplication {
