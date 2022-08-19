@@ -17,6 +17,8 @@ public enum BusinessExceptionEnum implements BaseEnum {
     TOKEN_VALID_FAIL(2002, "令牌验证失败"),
     /*非法令牌*/
     TOKEN_ILLEGALITY(2003, "非法令牌"),
+    /*令牌过期*/
+    TOKEN_IS_EXPIRE(2004, "令牌过期"),
     ;
 
     private final Integer code;

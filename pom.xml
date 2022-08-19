@@ -23,6 +23,7 @@
         <captcha.version>1.6.2</captcha.version>
         <spring-dependencies-version>2.7.2</spring-dependencies-version>
         <jwt.version>4.0.0</jwt.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
 
     </properties>
 
@@ -78,6 +79,15 @@
                 <artifactId>java-jwt</artifactId>
                 <version>${jwt.version}</version>
             </dependency>
+
+            <!--commons-beanutils-->
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons-beanutils.version}</version>
+            </dependency>
+
+
 
 
             <dependency>

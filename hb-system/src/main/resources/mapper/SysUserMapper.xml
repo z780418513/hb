@@ -5,7 +5,7 @@
 
 <mapper namespace="com.hb.system.mapper.SysUserMapper">
     <!--User findByUsername(String userName);-->
-    <select id="findByUsername" parameterType="string" resultType="com.hb.system.model.SysUser">
+    <select id="findByUsername" parameterType="string" resultType="com.hb.system.model.LoginUser">
         select id,username,password,is_enable AS enable from sys_user where username = #{userName}
     </select>
 

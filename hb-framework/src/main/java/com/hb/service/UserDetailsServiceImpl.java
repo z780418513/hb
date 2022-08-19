@@ -4,7 +4,7 @@ package com.hb.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hb.system.mapper.SysUserMapper;
-import com.hb.system.model.SysUser;
+import com.hb.system.model.LoginUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
+        LoginUser user = userMapper.selectOne(new LambdaQueryWrapper<LoginUser>().eq(LoginUser::getUsername, username));
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }

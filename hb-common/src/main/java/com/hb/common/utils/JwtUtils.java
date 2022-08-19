@@ -22,8 +22,8 @@ import java.util.Map;
  * @author zhaochengshui
  */
 @Component
-public class JwtUtil {
-    public final Logger log = LoggerFactory.getLogger(JwtUtil.class);
+public class JwtUtils {
+    public final Logger log = LoggerFactory.getLogger(JwtUtils.class);
 
     /**
      * 密钥
@@ -125,6 +125,8 @@ public class JwtUtil {
         }
     }
 
+
+
     /**
      * 获得token中的过期时间
      *
@@ -140,5 +142,6 @@ public class JwtUtil {
             return null;
         }
     }
+
 
 }

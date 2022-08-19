@@ -14,51 +14,58 @@ import java.util.Collection;
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
-     * 用户名
+     * 生成token时的UUID
      */
-    private final Object principal;
+    private Object uuid;
     /**
-     * 密码
+     * token
      */
-    private Object credentials;
+    private Object token;
+    /**
+     * loginUser信息(包含uuid)
+     */
+    private Object loginUser;
 
 
     /**
      * 设置未认证 Authentication
      *
-     * @param userKey 用户key
-     * @param token   令牌
+     * @param uuid  uuid
+     * @param token 令牌
      */
-    public JwtAuthenticationToken(Object userKey, Object token) {
+    public JwtAuthenticationToken(Object uuid, Object token, Object loginUser) {
         super(null);
-        this.principal = userKey;
-        this.credentials = token;
+        this.uuid = uuid;
+        this.token = token;
+        this.loginUser = loginUser;
         setAuthenticated(false);
     }
 
     /**
      * 设置已认证 Authentication
      *
-     * @param userKey     用户key
+     * @param uuid        uuid
      * @param token       令牌
+     * @param loginUser   登录信息信息
      * @param authorities 权限集合
      */
-    public JwtAuthenticationToken(Object userKey, Object token, Collection<? extends GrantedAuthority> authorities) {
+    public JwtAuthenticationToken(Object uuid, Object token, Object loginUser, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.principal = userKey;
-        this.credentials = token;
+        this.uuid = uuid;
+        this.token = token;
+        this.loginUser = loginUser;
         super.setAuthenticated(true);
     }
 
 
     @Override
     public Object getCredentials() {
-        return this.credentials;
+        return this.loginUser;
     }
 
     @Override
     public Object getPrincipal() {
-        return this.principal;
+        return this.uuid;
     }
 
     @Override
@@ -71,7 +78,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public void eraseCredentials() {
         super.eraseCredentials();
-        this.credentials = null;
+        this.loginUser = null;
     }
 
 

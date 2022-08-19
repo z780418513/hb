@@ -74,12 +74,16 @@
         </dependency>
 
         <!-- JWT依赖 -->
-        <!--JWT-->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
         </dependency>
 
+        <!--commons-beanutils-->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
 
 
 

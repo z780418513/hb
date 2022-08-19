@@ -9,7 +9,7 @@ public class SecurityConstants {
     /**
      * 认证令牌 的redis前缀
      */
-    public static final String TOKEN_REDIS_PREFIX = "token:";
+    public static final String TOKEN_REDIS_PREFIX = "login-token:";
 
     /**
      * 认证令牌 请求头标识
