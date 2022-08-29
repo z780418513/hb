@@ -18,10 +18,29 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
+        <!--aop依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
+
+        <!-- 用于日志切面中，以 json 格式打印出入参 -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.hb</groupId>
             <artifactId>hb-system</artifactId>
         </dependency>
+
+
     </dependencies>
 
 </project>

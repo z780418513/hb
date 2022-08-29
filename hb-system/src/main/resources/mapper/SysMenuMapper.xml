@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hb.system.mapper.SysMenuMapper">
+
+    <select id="getTreeMenuByUserId" resultType="com.hb.system.vo.MenuVo">
+        SELECT sur.user_id,sur.role_id , sr.role_name, sm.* FROM sys_user_role sur
+            LEFT JOIN sys_role sr ON sur.role_id  = sr.id
+            LEFT JOIN sys_role_menu srm  ON srm.role_id = sr.id
+            LEFT JOIN sys_menu sm ON srm.menu_id = sm.id
+        WHERE sur.user_id = #{id} AND sm.node_type != 3 ORDER BY `LEVEL` ,	`sort`
+    </select>
+</mapper>

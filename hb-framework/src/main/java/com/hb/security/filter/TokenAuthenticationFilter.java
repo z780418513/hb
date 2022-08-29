@@ -2,6 +2,7 @@ package com.hb.security.filter;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hb.common.constants.SecurityConstants;
+import com.hb.common.constants.SysConstant;
 import com.hb.common.utils.RedisUtils;
 import com.hb.security.token.JwtAuthenticationToken;
 import com.hb.service.TokenService;
@@ -30,8 +31,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private AuthenticationManager authenticationManager;
     @Resource
     private RedisUtils redisUtils;
-    public final String loginUrl = "/user/login";
-    public final String isPost = "POST";
 
     /**
      * 有token就校验token，没有直接放行
@@ -46,21 +45,22 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 登录请求放行
-        if (loginUrl.equals(request.getRequestURI()) && isPost.equals(request.getMethod())) {
+        if (SecurityConstants.LOGIN_URL.equals(request.getRequestURI()) && SysConstant.POST.equals(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
         String token = request.getHeader(SecurityConstants.TOKEN_HEADER_FLAG);
         if (StringUtils.isNotBlank(token)) {
             // 获得token中的username,并获得登录用户信息
-            String uuid = tokenService.getUserNameFromToken(token);
-            Object loginUser = redisUtils.get(SecurityConstants.TOKEN_REDIS_PREFIX + uuid);
+            String username = tokenService.getUserNameFromToken(token);
+            // 如果缓存中没有用户信息，就直接返回
+            Object loginUser = redisUtils.get(SecurityConstants.TOKEN_REDIS_PREFIX + username);
             if (Objects.isNull(loginUser)) {
                 filterChain.doFilter(request, response);
                 return;
             }
             // 认证token
-            JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(uuid, token, loginUser);
+            JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(username, token);
             Authentication authenticate = authenticationManager.authenticate(jwtAuthenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authenticate);
         }

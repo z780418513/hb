@@ -1,12 +1,17 @@
 package com.hb.security.config;
 
+import com.hb.security.CustomAccessDecisionManager;
+import com.hb.security.CustomFilterInvocationSecurityMetadataSource;
 import com.hb.security.filter.TokenAuthenticationFilter;
+import com.hb.security.handler.CustomAccessDeniedHandler;
+import com.hb.security.handler.CustomAuthenticationEntryPoint;
 import com.hb.security.porvider.TokenAuthenticationProvider;
 import com.hb.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -14,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
@@ -62,7 +68,7 @@ public class SecurityConfig {
     }
 
     /**
-     * 注册 AuthenticationManager
+     * 认证管理器
      *
      * @return AuthenticationManager
      */
@@ -71,11 +77,30 @@ public class SecurityConfig {
         return new ProviderManager(daoAuthenticationProvider(), tokenAuthenticationProvider);
     }
 
+    //------------------------Filter------------------------
+
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
         return new TokenAuthenticationFilter();
     }
 
+    /**
+     * 授权管理器
+     */
+    @Resource
+    private CustomAccessDecisionManager accessDecisionManager;
+
+
+    @Resource
+    private CustomFilterInvocationSecurityMetadataSource securityMetadataSource;
+
+
+    //------------------------Handler------------------------
+
+    @Resource
+    private CustomAccessDeniedHandler accessDeniedHandler;
+    @Resource
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     /**
      * http配置
@@ -99,9 +124,21 @@ public class SecurityConfig {
                 .antMatchers("/user/login").anonymous()
                 .antMatchers("/captcha").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated().and()
+                .anyRequest().authenticated()
+                // 配置accessDecisionManager和securityMetadataSource
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
+                        fsi.setAccessDecisionManager(accessDecisionManager);
+                        fsi.setSecurityMetadataSource(securityMetadataSource);
+                        return fsi;
+                    }
+                }).and()
                 // 自定义过滤器
                 .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                // 授权失败拦截器
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint).and()
                 .build();
     }
 

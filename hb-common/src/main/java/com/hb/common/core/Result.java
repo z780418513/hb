@@ -1,35 +1,37 @@
 package com.hb.common.core;
 
 
+import com.hb.common.constants.SysConstant;
 import com.hb.common.enums.BusinessExceptionEnum;
-import com.hb.common.exceptions.BusinessException;
-import org.springframework.http.HttpStatus;
+import com.hb.common.enums.SysExceptionEnum;
+import com.hb.common.exceptions.BaseException;
+import lombok.Data;
 
-import java.util.HashMap;
-import java.util.Objects;
+import java.io.Serializable;
 
 /**
  * 操作消息提醒
  *
  * @author hanbaolaoba
  */
-public class Result extends HashMap<String, Object> {
+@Data
+public class Result implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
      * 状态码
      */
-    public static final String CODE_TAG = "code";
+    private Integer code;
 
     /**
-     * 返回内容
+     * 返回信息
      */
-    public static final String MSG_TAG = "msg";
+    private String msg;
 
     /**
      * 数据对象
      */
-    public static final String DATA_TAG = "data";
+    private Object data;
 
     /**
      * 初始化一个新创建的 Result 对象，使其表示一个空消息。
@@ -44,8 +46,8 @@ public class Result extends HashMap<String, Object> {
      * @param msg  返回内容
      */
     public Result(int code, String msg) {
-        super.put(CODE_TAG, code);
-        super.put(MSG_TAG, msg);
+        this.code = code;
+        this.msg = msg;
     }
 
     /**
@@ -56,11 +58,13 @@ public class Result extends HashMap<String, Object> {
      * @param data 数据对象
      */
     public Result(int code, String msg, Object data) {
-        super.put(CODE_TAG, code);
-        super.put(MSG_TAG, msg);
-        super.put(DATA_TAG, Objects.nonNull(data) ? data : null);
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
 
     }
+
+    //-------------------SUCCESS-------------------
 
     /**
      * 返回成功消息
@@ -98,13 +102,16 @@ public class Result extends HashMap<String, Object> {
      * @return 成功消息
      */
     public static Result success(String msg, Object data) {
-        return new Result(HttpStatus.OK.value(), msg, data);
+        return new Result(SysConstant.RESULT_SUCCESS, msg, data);
     }
+
+
+    //-------------------ERROR-------------------
 
     /**
      * 返回错误消息
      *
-     * @return
+     * @return error
      */
     public static Result error() {
         return Result.error("操作失败");
@@ -113,7 +120,8 @@ public class Result extends HashMap<String, Object> {
     /**
      * 返回错误消息
      *
-     * @return
+     * @param exceptionEnum 业务异常枚举
+     * @return error
      */
     public static Result error(BusinessExceptionEnum exceptionEnum) {
         return Result.error(exceptionEnum.getCode(), exceptionEnum.getMsg());
@@ -122,10 +130,21 @@ public class Result extends HashMap<String, Object> {
     /**
      * 返回错误消息
      *
-     * @return
+     * @param exceptionEnum 系统异常
+     * @return error
      */
-    public static Result error(BusinessException e) {
-        return Result.error(e.getMessage());
+    public static Result error(SysExceptionEnum exceptionEnum) {
+        return Result.error(exceptionEnum.getCode(), exceptionEnum.getMsg());
+    }
+
+    /**
+     * 返回错误消息
+     *
+     * @param e 基础异常
+     * @return error
+     */
+    public static Result error(BaseException e) {
+        return Result.error(e.getExceptionCode(), e.getMessage());
     }
 
     /**
@@ -146,7 +165,7 @@ public class Result extends HashMap<String, Object> {
      * @return 警告消息
      */
     public static Result error(String msg, Object data) {
-        return new Result(HttpStatus.NOT_FOUND.value(), msg, data);
+        return new Result(SysConstant.RESULT_FAIL, msg, data);
     }
 
     /**
@@ -160,16 +179,4 @@ public class Result extends HashMap<String, Object> {
         return new Result(code, msg, null);
     }
 
-    /**
-     * 方便链式调用
-     *
-     * @param key   键
-     * @param value 值
-     * @return 数据对象
-     */
-    @Override
-    public Result put(String key, Object value) {
-        super.put(key, value);
-        return this;
-    }
 }

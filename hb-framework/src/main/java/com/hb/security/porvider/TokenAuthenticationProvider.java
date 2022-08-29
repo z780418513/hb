@@ -2,6 +2,7 @@ package com.hb.security.porvider;
 
 import com.hb.security.token.JwtAuthenticationToken;
 import com.hb.service.TokenService;
+import com.hb.system.model.LoginUser;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -36,10 +37,10 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         if (!tokenService.validateToken(token)) {
             return authentication;
         }
-        // TODO 权限信息
-        String role = "admin";
+        // redis中获取登录用户信息
+        LoginUser loginUser = (LoginUser) tokenService.getLoginUserFromRedis(token);
         return new JwtAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(),
-                authentication.getDetails(), Collections.singleton(new SimpleGrantedAuthority(role)));
+                Collections.singleton(new SimpleGrantedAuthority(loginUser.getRoles())));
     }
 
     @Override

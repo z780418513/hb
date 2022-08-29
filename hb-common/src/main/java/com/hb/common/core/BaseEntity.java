@@ -1,6 +1,8 @@
 package com.hb.common.core;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
  *
  * @author zhaochengshui
  */
+@Data
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -39,6 +42,7 @@ public class BaseEntity implements Serializable {
     /**
      * 逻辑删除 1=true 0=false
      */
+    @TableLogic
     @TableField("is_deleted")
     private boolean deleted;
 }

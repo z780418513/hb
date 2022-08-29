@@ -36,5 +36,17 @@ public class SecurityConstants {
      */
     public static final String USER_KEY_HEADER_FLAG = "userKey";
 
+    /**
+     * 资源授权 redis前缀
+     */
+    public static final String RESOURCE_AUTH_REDIS_PREFIX = "resource_auth:";
+
+    /**
+     * 登录接口url
+     */
+    public static final String LOGIN_URL = "/user/login";
+
+
+
 
 }

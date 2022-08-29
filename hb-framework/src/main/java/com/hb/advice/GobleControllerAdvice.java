@@ -1,11 +1,13 @@
 package com.hb.advice;
 
 import com.hb.common.core.Result;
-import com.hb.common.enums.BusinessExceptionEnum;
+import com.hb.common.enums.SysExceptionEnum;
 import com.hb.common.exceptions.BusinessException;
+import com.hb.common.exceptions.SysException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
@@ -34,7 +36,7 @@ public class GobleControllerAdvice {
     @ExceptionHandler({Exception.class})
     @ResponseBody
     public Result exceptionHandler(Exception e) {
-        log.error("exceptionHandler ===> ", e);
+        log.error("全局异常:  {} ===> {}", e.getClass().getName(), e.getMessage());
         return Result.error(e.getMessage());
     }
 
@@ -47,7 +49,7 @@ public class GobleControllerAdvice {
     @ExceptionHandler({BindException.class})
     @ResponseBody
     public Result bindExceptionHandler(BindException e) {
-        log.error("bindExceptionHandler ===> {}", e.getAllErrors());
+        log.error("校验异常:  {} ===> {}", e.getClass().getName(), e.getMessage());
         String allErrorMsg = e.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(","));
         return Result.error(allErrorMsg);
@@ -62,10 +64,24 @@ public class GobleControllerAdvice {
     @ExceptionHandler({AuthenticationException.class})
     @ResponseBody
     public Result bindExceptionHandler(AuthenticationException e) {
+        log.error("认证失败:  {} ===> {}", e.getClass().getName(), e.getMessage());
         if (e instanceof BadCredentialsException) {
-            return Result.error(BusinessExceptionEnum.PASSWORD_ERROR);
+            return Result.error(SysExceptionEnum.USERNAME_PASSWORD_ERROR.getMsg());
         }
-        log.error("authenticationException  ===> ", e);
+        return Result.error(e.getMessage());
+    }
+
+
+    /**
+     * AccessDeniedException 拦截器
+     *
+     * @param e AuthenticationException
+     * @return Result
+     */
+    @ExceptionHandler({AccessDeniedException.class})
+    @ResponseBody
+    public Result accessDeniedExceptionHandler(AccessDeniedException e) {
+        log.error("鉴权失败:  {} ===> {}", e.getClass().getName(), e.getMessage());
         return Result.error(e.getMessage());
     }
 
@@ -77,9 +93,24 @@ public class GobleControllerAdvice {
      */
     @ExceptionHandler({BusinessException.class})
     @ResponseBody
-    public Result bindExceptionHandler(BusinessException e) {
+    public Result businessExceptionHandler(BusinessException e) {
+        log.error("业务异常:  {} ===> {}", e.getClass().getName(), e.getMessage());
         return Result.error(e);
     }
+
+    /**
+     * 系统异常 SysException 拦截器
+     *
+     * @param e SysException
+     * @return Result
+     */
+    @ExceptionHandler({SysException.class})
+    @ResponseBody
+    public Result sysExceptionHandler(SysException e) {
+        log.error("系统失败:  {} ===> {}", e.getClass().getName(), e.getMessage());
+        return Result.error(e);
+    }
+
 
 }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hb.system.mapper.SysRoleMapper">
+
+    <select id="queryRolesByUserId" resultType="com.hb.system.entity.SysRole">
+        SELECT r.* FROM sys_user_role ur LEFT JOIN sys_role r ON ur.role_id = r.id WHERE ur.user_id = #{id}
+    </select>
+
+    <select id="queryRolesWithModule" resultType="com.hb.system.model.ResourceAuth">
+     SELECT m.module , r.role_name  as role FROM sys_menu m
+         LEFT JOIN sys_role_menu re ON re.menu_id = m.id
+         LEFT JOIN sys_role r ON r.id = re.role_id
+         WHERE  m.node_type = 2
+    </select>
+</mapper>

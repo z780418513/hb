@@ -3,17 +3,21 @@ package com.hb.service;
 import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hb.common.constants.SecurityConstants;
-import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.enums.LoginTypeEnum;
-import com.hb.common.exceptions.BusinessException;
+import com.hb.common.enums.SysExceptionEnum;
+import com.hb.common.exceptions.SysException;
 import com.hb.common.utils.IdUtils;
 import com.hb.common.utils.IpUtils;
 import com.hb.common.utils.JwtUtils;
 import com.hb.common.utils.RedisUtils;
+import com.hb.system.entity.SysUser;
+import com.hb.system.model.CustomUserDetails;
 import com.hb.system.model.LoginUser;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * tokenService 服务类
@@ -37,7 +42,6 @@ public class TokenService {
      */
     @Value("${jwt.token-header:}")
     private String tokenHeader;
-
     /**
      * 认证令牌过期时间
      */
@@ -59,15 +63,15 @@ public class TokenService {
     public String refreshToken(String token, HttpServletRequest request) {
         // 校验token
         if (!validateToken(token)) {
-            throw new BusinessException(BusinessExceptionEnum.TOKEN_VALID_FAIL);
+            throw new SysException(SysExceptionEnum.TOKEN_VALID_FAIL);
         }
         // 获得loginUser
-        String uuid = jwtUtil.getClaim(token).get("UUID").toString();
-        Object loginUser = redisUtil.get(SecurityConstants.TOKEN_REDIS_PREFIX + uuid);
+        String username = getUserNameFromToken(token);
+        Object loginUser = redisUtil.get(SecurityConstants.TOKEN_REDIS_PREFIX + username);
         if (Objects.isNull(loginUser)) {
-            throw new BusinessException(BusinessExceptionEnum.TOKEN_IS_EXPIRE);
+            throw new SysException(SysExceptionEnum.TOKEN_IS_EXPIRE);
         }
-        return getOathToken((LoginUser) loginUser, request);
+        return getOathToken((SysUser) loginUser, request);
     }
 
     /**
@@ -77,11 +81,11 @@ public class TokenService {
      * @param user 登录用户信息
      * @return Token
      */
-    public String getOathToken(LoginUser user, HttpServletRequest request) {
-        setUser(user, request);
-        String token = this.tokenHeader + jwtUtil.generateAccessToken(convertLoginUser(user));
+    public String getOathToken(SysUser user, HttpServletRequest request) {
+        LoginUser loginUser = setUser(user, request);
+        String token = this.tokenHeader + jwtUtil.generateAccessToken(convertLoginUser(loginUser));
         // 放到redis中，key(login-token:username)  value(loginUser)
-        redisUtil.set(SecurityConstants.TOKEN_REDIS_PREFIX + user.getUsername(), user, expiration * 60 * 60);
+        redisUtil.set(SecurityConstants.TOKEN_REDIS_PREFIX + user.getUsername(), loginUser, expiration * 60 * 60);
         return token;
     }
 
@@ -92,23 +96,8 @@ public class TokenService {
      * @return boolean
      */
     public boolean validateToken(String token) {
-        if (StringUtils.isBlank(token)) {
-            log.debug("token为空");
-            return false;
-        }
-        if (!token.startsWith(tokenHeader)) {
-            log.debug("非法token:[ {} ]", token);
-            return false;
-        }
+        checkTokenHeader(token);
         return jwtUtil.verifierToken(token.substring(tokenHeader.length()));
-    }
-
-
-    public Map<String, Claim> loginUserByToken(String token) {
-        if (StringUtils.isNotBlank(token) || token.startsWith(tokenHeader)) {
-            return jwtUtil.getClaim(token.substring(tokenHeader.length()));
-        }
-        return null;
     }
 
 
@@ -120,23 +109,63 @@ public class TokenService {
     }
 
 
-    public void setUser(LoginUser loginUser, HttpServletRequest request) {
+    public LoginUser setUser(SysUser user, HttpServletRequest request) {
+        CustomUserDetails userDetails = (CustomUserDetails) user;
+        LoginUser loginUser = new LoginUser();
+        BeanUtils.copyProperties(userDetails,loginUser);
         loginUser.setLoginType(LoginTypeEnum.USERNAME_PASSWORD.getCode());
+        // 角色
+        String roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        loginUser.setRoles(roles);
         loginUser.setUuid(IdUtils.simpleUUID());
         loginUser.setIp(IpUtils.getIpAddr(request));
         loginUser.setLoginTime(System.currentTimeMillis());
+        return loginUser;
     }
 
 
+    /**
+     * 获得token中的username
+     *
+     * @param token 令牌
+     * @return username
+     */
     public String getUserNameFromToken(String token) {
-        if (StringUtils.isNotBlank(token) || token.startsWith(tokenHeader)) {
-            Map<String, Claim> claims = jwtUtil.getClaim(token.substring(tokenHeader.length()));
-            return claims.get("username").asString();
-        }
-        return "";
+        checkTokenHeader(token);
+        Map<String, Claim> claims = jwtUtil.getClaim(token.substring(tokenHeader.length()));
+        return claims.get("username").asString();
     }
 
 
+    /**
+     * 校验token头
+     *
+     * @param token 令牌
+     */
+    public void checkTokenHeader(String token) {
+        if (StringUtils.isBlank(token) || !token.startsWith(tokenHeader)) {
+            throw new SysException(SysExceptionEnum.TOKEN_ILLEGALITY);
+        }
+    }
+
+    /**
+     * 获得过期时间戳
+     *
+     * @param token 令牌
+     * @return 过期时间戳
+     */
+    public Long getExpirationDateTime(String token) {
+        checkTokenHeader(token);
+        return jwtUtil.getExpiration(token.substring(tokenHeader.length()));
+    }
+
+
+    public Object getLoginUserFromRedis(String token){
+        String username = getUserNameFromToken(token);
+        return redisUtil.get(SecurityConstants.TOKEN_REDIS_PREFIX + username);
+    }
 
 
 }

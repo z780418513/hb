@@ -6,8 +6,8 @@ import com.hb.common.core.Result;
 import com.hb.common.core.ValidGroup;
 import com.hb.common.utils.RedisUtils;
 import com.hb.service.TokenService;
+import com.hb.system.model.CustomUserDetails;
 import com.hb.system.model.LoginBody;
-import com.hb.system.model.LoginUser;
 import com.wf.captcha.SpecCaptcha;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +31,8 @@ import java.util.UUID;
  * @author zhaochengshui
  */
 @RestController
-public class SysLoginController {
-    public static final Logger log = LoggerFactory.getLogger(SysLoginController.class);
+public class LoginController {
+    public static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     @Resource
     private RedisUtils redisUtil;
@@ -49,19 +49,33 @@ public class SysLoginController {
      */
     @PostMapping("/user/login")
     public Result login(@RequestBody @Validated(value = {ValidGroup.Search.class}) LoginBody user, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println(request);
         //使用用户名密码进行登录验证
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         Authentication authentication = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         //生成JWT
-        String token = tokenService.getOathToken(loginUser, request);
-        redisUtil.set(SecurityConstants.TOKEN_REDIS_PREFIX + user.getUsername(), token);
+        String token = tokenService.getOathToken(userDetails, request);
+        long expirationTime = tokenService.getExpirationDateTime(token);
+        HashMap<String, Object> map = new HashMap<>(2);
+        map.put("token", token);
+        map.put("expireTime", expirationTime);
+        return Result.success("登录成功", map);
+    }
 
-        return Result.success("登录成功", token);
+    /**
+     * 退出登录
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/login/out")
+    public Result loginOut(HttpServletRequest request) {
+        String token = request.getHeader(SecurityConstants.TOKEN_HEADER_FLAG);
+        String username = tokenService.getUserNameFromToken(token);
+        redisUtil.del(SecurityConstants.TOKEN_REDIS_PREFIX + username);
+        return Result.success("退出成功");
     }
 
 
