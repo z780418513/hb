@@ -11,6 +11,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
+ * 项目启动后，会将角色与菜单的关联信息存放到redis中去，用户授权认证判断
+ *
  * @author zhaochengshui
  * @description 初始化授权资源到redis中去
  * @date 2022/8/27

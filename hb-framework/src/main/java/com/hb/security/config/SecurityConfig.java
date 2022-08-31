@@ -1,7 +1,7 @@
 package com.hb.security.config;
 
-import com.hb.security.CustomAccessDecisionManager;
-import com.hb.security.CustomFilterInvocationSecurityMetadataSource;
+import com.hb.security.access.CustomAccessDecisionManager;
+import com.hb.security.access.CustomFilterInvocationSecurityMetadataSource;
 import com.hb.security.filter.TokenAuthenticationFilter;
 import com.hb.security.handler.CustomAccessDeniedHandler;
 import com.hb.security.handler.CustomAuthenticationEntryPoint;
@@ -25,6 +25,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import javax.annotation.Resource;
 
 /**
+ * springSecurity执行流程
+ * 用户请求==> 认证 ==> 授权
+ *
  * @author zhaochengshui
  * @description security配置类
  * @date 2022-08-17

@@ -1,10 +1,9 @@
-package com.hb.security;
+package com.hb.security.access;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hb.common.constants.SecurityConstants;
 import com.hb.common.utils.RedisUtils;
-import com.hb.system.mapper.SysRoleMapper;
 import com.hb.system.model.ResourceAuth;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -14,7 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -25,12 +27,8 @@ import java.util.stream.Collectors;
 @Component
 public class CustomFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
     @Resource
-    private SysRoleMapper sysRoleMapper;
-    @Resource
     private RedisUtils redisUtils;
 
-    // 相当于数据库的页面和权限，这里可替换成数据库
-    Map<String, Collection<ConfigAttribute>> map = new HashMap<String, Collection<ConfigAttribute>>();
 
     //TODO 白名单 黑名单
 

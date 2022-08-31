@@ -1,4 +1,4 @@
-package com.hb.security;
+package com.hb.security.access;
 
 import com.hb.common.constants.SecurityConstants;
 import com.hb.common.constants.SysConstant;
@@ -17,8 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 
 /**
+ * 决策访问管理器：当用户进行认证通过后，会处理授权决策，用户判断是否通过授权
+ *
  * @author zhaochengshui
- * @description
+ * @description 自定义决策访问管理器
  * @date 2022/8/26
  */
 @Component
@@ -29,8 +31,8 @@ public class CustomAccessDecisionManager implements AccessDecisionManager {
      * 授权失败 throw AccessDeniedException，通过直接return
      *
      * @param authentication   包含了当前的用户信息，包括拥有的权限。这里的权限来源就是前面登录时UserDetailsService中设置的authorities
+     * @param configAttributes 是本次访问需要的权限,来源于 {@link CustomFilterInvocationSecurityMetadataSource#getAttributes(Object)}
      * @param object           FilterInvocation对象，可以得到request等web资源
-     * @param configAttributes 是本次访问需要的权限
      * @throws AccessDeniedException
      * @throws InsufficientAuthenticationException
      */
@@ -39,7 +41,7 @@ public class CustomAccessDecisionManager implements AccessDecisionManager {
             throws AccessDeniedException, InsufficientAuthenticationException {
         // 登录接口放行
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
-        if (SecurityConstants.LOGIN_URL.equals(request.getRequestURI()) && SysConstant.POST.equals(request.getMethod())){
+        if (SecurityConstants.LOGIN_URL.equals(request.getRequestURI()) && SysConstant.POST.equals(request.getMethod())) {
             return;
         }
 

@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 用户认证失败后，会抛AuthenticationException异常，该拦截器会捕获到，进行处理，将响应信息返回
+ * --当是匿名用户，授权失败也会被该拦截器捕获--
+ *
  * @author zhaochengshui
  * @description 认证失败拦截器
  * @date 2022/8/27

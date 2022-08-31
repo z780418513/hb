@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 用户授权认证失败后，会抛AccessDeniedException异常，该拦截器会捕获到，进行处理，将响应信息返回
+ *
  * @author zhaochengshui
  * @description 授权失败处理器
  * @date 2022/8/27
