@@ -31,6 +31,15 @@ public class ServletUtils {
     }
 
     /**
+     * 获取请求方法
+     *
+     * @return
+     */
+    public static String getRequestMethod() {
+        return getRequestAttributes().getRequest().getMethod();
+    }
+
+    /**
      * 获取response
      */
     public static HttpServletResponse getResponse() {

@@ -1,5 +1,6 @@
 package com.hb.security.porvider;
 
+import com.hb.LoginUserContextHolder;
 import com.hb.security.token.JwtAuthenticationToken;
 import com.hb.service.TokenService;
 import com.hb.system.model.LoginUser;
@@ -39,6 +40,8 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         }
         // redis中获取登录用户信息
         LoginUser loginUser = (LoginUser) tokenService.getLoginUserFromRedis(token);
+        // 将用户信息缓存到容器中
+        LoginUserContextHolder.setLoginUser(loginUser);
         return new JwtAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(),
                 Collections.singleton(new SimpleGrantedAuthority(loginUser.getRoles())));
     }

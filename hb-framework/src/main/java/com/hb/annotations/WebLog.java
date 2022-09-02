@@ -1,5 +1,7 @@
 package com.hb.annotations;
 
+import com.hb.common.enums.BusinessTypeEnum;
+
 import java.lang.annotation.*;
 
 /**
@@ -12,9 +14,23 @@ import java.lang.annotation.*;
 @Documented
 public @interface WebLog {
     /**
-     * 日志描述信息
-     *
-     * @return
+     * 模块
      */
-    String description() default "";
+    String module() default "";
+
+    /**
+     * 功能
+     */
+    BusinessTypeEnum businessType() default BusinessTypeEnum.OTHER;
+
+    /**
+     * 是否保存请求的参数
+     */
+    boolean isSaveRequestData() default true;
+
+    /**
+     * 是否保存响应的参数
+     */
+    boolean isSaveResponseData() default true;
+
 }
