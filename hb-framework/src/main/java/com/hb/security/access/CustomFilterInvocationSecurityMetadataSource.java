@@ -7,6 +7,9 @@ import com.hb.common.utils.RedisUtils;
 import com.hb.system.model.ResourceAuth;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
@@ -43,6 +46,14 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
      */
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
+        // 匿名用户返回 ROLE_ANONYMOUS，不然会直接放行，不走CustomAccessDecisionManager
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            SecurityConfig roleAnonymous = new SecurityConfig("ROLE_ANONYMOUS");
+            ArrayList<ConfigAttribute> list = new ArrayList<>();
+            list.add(roleAnonymous);
+            return list;
+        }
         String requestUrl = ((FilterInvocation) object).getRequestUrl();
         String module = (requestUrl.split("/"))[1];
         Object resourceAuth = redisUtils.get(SecurityConstants.RESOURCE_AUTH_REDIS_PREFIX);

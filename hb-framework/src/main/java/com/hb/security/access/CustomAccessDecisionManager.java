@@ -6,6 +6,7 @@ import com.hb.common.enums.RoleEnum;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,7 +45,10 @@ public class CustomAccessDecisionManager implements AccessDecisionManager {
         if (SecurityConstants.LOGIN_URL.equals(request.getRequestURI()) && SysConstant.POST.equals(request.getMethod())) {
             return;
         }
-
+        // 匿名用户
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            throw new AccessDeniedException("访问失败，未得到授权");
+        }
         // 认证成功后未含有角色
         if (CollectionUtils.isEmpty(authentication.getAuthorities())) {
             throw new AccessDeniedException("访问失败，未得到授权");

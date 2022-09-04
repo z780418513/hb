@@ -1,6 +1,8 @@
 package com.hb.security.porvider;
 
 import com.hb.LoginUserContextHolder;
+import com.hb.common.enums.SysExceptionEnum;
+import com.hb.common.exceptions.SysException;
 import com.hb.security.token.JwtAuthenticationToken;
 import com.hb.service.TokenService;
 import com.hb.system.model.LoginUser;
@@ -36,7 +38,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         String token = String.valueOf(authentication.getCredentials());
         // 校验token是否有效，无效就直接返回
         if (!tokenService.validateToken(token)) {
-            return authentication;
+            throw new SysException(SysExceptionEnum.TOKEN_VALID_FAIL);
         }
         // redis中获取登录用户信息
         LoginUser loginUser = (LoginUser) tokenService.getLoginUserFromRedis(token);
