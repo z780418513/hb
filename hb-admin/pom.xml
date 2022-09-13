@@ -18,6 +18,12 @@
             <groupId>com.hb</groupId>
             <artifactId>hb-framework</artifactId>
         </dependency>
+        <!--junit-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
