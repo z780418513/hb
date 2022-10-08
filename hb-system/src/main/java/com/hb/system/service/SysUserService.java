@@ -5,6 +5,7 @@ import com.hb.common.core.PageBean;
 import com.hb.system.dto.UserDTO;
 import com.hb.system.entity.SysUser;
 import com.hb.system.vo.MenuVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,9 +42,18 @@ public interface SysUserService extends IService<SysUser> {
 
     /**
      * 修改用户（ID）
-     * @param id 用户id
+     *
+     * @param id      用户id
      * @param userDTO dto
      * @return 成功与否
      */
     boolean modifyUser(Long id, UserDTO userDTO);
+
+    /**
+     * 上传头像
+     *
+     * @param file
+     * @param id
+     */
+    void uploadAvatar(MultipartFile file, Long id);
 }

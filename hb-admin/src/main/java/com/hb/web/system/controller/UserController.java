@@ -7,11 +7,13 @@ import com.hb.common.core.ValidGroup;
 import com.hb.common.enums.BusinessTypeEnum;
 import com.hb.system.dto.UserDTO;
 import com.hb.system.entity.SysUser;
+import com.hb.system.service.SysFileService;
 import com.hb.system.service.SysUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.Objects;
@@ -28,6 +30,8 @@ public class UserController {
     private SysUserService sysUserService;
     @Resource
     private PasswordEncoder passwordEncoder;
+    @Resource
+    private SysFileService sysFileService;
 
 
     /**
@@ -100,5 +104,12 @@ public class UserController {
     @GetMapping("/menus")
     public Result getMenus(@RequestParam("id") Long userId) {
         return Result.success(sysUserService.getMenusById(userId));
+    }
+
+    @PostMapping("/uploadAvatar")
+    public Result uploadAvatar(@RequestParam("file") MultipartFile file,
+                               @RequestParam("id") Long id) {
+        sysUserService.uploadAvatar(file, id);
+        return Result.success();
     }
 }

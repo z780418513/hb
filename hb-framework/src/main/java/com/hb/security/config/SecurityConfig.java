@@ -148,7 +148,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> {
-            web.ignoring().antMatchers("/ignore1", "/ignore2");
+            web.ignoring().antMatchers("/test", "/ignore2");
         };
     }
 

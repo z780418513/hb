@@ -26,6 +26,8 @@
         <commons-beanutils.version>1.9.3</commons-beanutils.version>
         <gson.version>2.9.1</gson.version>
         <hb.oss.version>1.0.0-SNAPSHOT</hb.oss.version>
+        <easy-excle-version>3.1.1</easy-excle-version>
+        <guava-version>31.1-jre</guava-version>
         <package.environment>dev</package.environment>
 
     </properties>
@@ -102,7 +104,17 @@
                 <version>${hb.oss.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easy-excle-version}</version>
+            </dependency>
 
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava-version}</version>
+            </dependency>
 
 
             <dependency>

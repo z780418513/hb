@@ -9,15 +9,19 @@ import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.exceptions.BusinessException;
 import com.hb.common.utils.PageUtils;
 import com.hb.system.dto.UserDTO;
+import com.hb.system.entity.SysFile;
 import com.hb.system.entity.SysUser;
 import com.hb.system.mapper.SysUserMapper;
+import com.hb.system.service.SysFileService;
 import com.hb.system.service.SysMenuService;
 import com.hb.system.service.SysUserService;
 import com.hb.system.vo.MenuVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +36,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserMapper sysUserMapper;
     @Resource
     private SysMenuService menuService;
+    @Resource
+    private SysFileService sysFileService;
 
     @Override
     public boolean deleteById(Long id) {
@@ -64,9 +70,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean modifyUser(Long id, UserDTO userDTO) {
         SysUser sysUser = new SysUser();
-        BeanUtils.copyProperties(userDTO,sysUser);
+        BeanUtils.copyProperties(userDTO, sysUser);
         sysUser.setId(id);
         return baseMapper.updateById(sysUser) == 1;
+    }
+
+    @Override
+    public void uploadAvatar(MultipartFile file, Long id) {
+        SysFile sysFile = null;
+        try {
+            sysFile = sysFileService.uploadFile(file);
+        } catch (IOException e) {
+            log.error("SysUserServiceImpl uploadAvatar msg: 上传头像失败");
+        }
+        if (sysFile != null && StringUtils.isNotBlank(sysFile.getOssUrl())) {
+            SysUser sysUser = new SysUser();
+            sysUser.setId(id);
+            sysUser.setAvatar(sysFile.getOssUrl());
+            baseMapper.updateById(sysUser);
+        }
     }
 
 

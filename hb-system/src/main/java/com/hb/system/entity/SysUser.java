@@ -61,5 +61,11 @@ public class SysUser extends BaseEntity {
     @TableField("email")
     private String email;
 
+    /**
+     * 用户头像
+     */
+    @TableField("avatar")
+    private String avatar;
+
 
 }

@@ -40,17 +40,10 @@
             <artifactId>hb-system</artifactId>
         </dependency>
 
-        <!--oss-->
+
         <dependency>
-            <groupId>com.hb</groupId>
-            <artifactId>oss-spring-boot-starter</artifactId>
-            <exclusions>
-                <!--排除logback-->
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
         </dependency>
 
 
