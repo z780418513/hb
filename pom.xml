@@ -28,6 +28,7 @@
         <hb.oss.version>1.0.0-SNAPSHOT</hb.oss.version>
         <easy-excle-version>3.1.1</easy-excle-version>
         <guava-version>31.1-jre</guava-version>
+        <commons-io-version>2.11.0</commons-io-version>
         <package.environment>dev</package.environment>
 
     </properties>
@@ -114,6 +115,12 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io-version}</version>
             </dependency>
 
 
