@@ -35,7 +35,7 @@ public class CustomUserDetails extends SysUser implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return this.isEnable();
+        return this.getEnable();
     }
 
     @Override

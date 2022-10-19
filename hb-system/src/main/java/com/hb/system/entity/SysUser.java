@@ -35,7 +35,7 @@ public class SysUser extends BaseEntity {
      * 启用状态
      */
     @TableField("is_enable")
-    private boolean enable;
+    private Boolean enable;
 
     /**
      * 姓名
