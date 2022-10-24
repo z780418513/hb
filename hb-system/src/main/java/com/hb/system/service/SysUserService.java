@@ -55,5 +55,14 @@ public interface SysUserService extends IService<SysUser> {
      * @param file
      * @param id
      */
-    void uploadAvatar(MultipartFile file, Long id);
+    String uploadAvatar(MultipartFile file, Long id);
+
+    /**
+     * 根据userid或用户名获得用户信息
+     *
+     * @param userId   userId
+     * @param username username
+     * @return SysUser
+     */
+    SysUser getUserInfo(Long userId, String username);
 }

@@ -73,7 +73,8 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
 
     private SysFile insertSysFile(String fileName, Long fileSize, String md5, String fileType, String contentType, String ossUrl) {
         SysFile sysFile = new SysFile();
-        sysFile.setFileName(fileName);
+        // 文件长度太长就切断
+        sysFile.setFileName(fileName.length() >= 255 ? fileName.substring(0, 255) : fileName);
         sysFile.setFileSize(fileSize);
         sysFile.setMd5(md5);
         sysFile.setImg(checkFileIsImg(fileType));

@@ -75,7 +75,7 @@ public class LoginController {
         String token = request.getHeader(SecurityConstants.TOKEN_HEADER_FLAG);
         String username = tokenService.getUserNameFromToken(token);
         redisUtil.del(SecurityConstants.TOKEN_REDIS_PREFIX + username);
-        return Result.success("退出成功");
+        return Result.success();
     }
 
 

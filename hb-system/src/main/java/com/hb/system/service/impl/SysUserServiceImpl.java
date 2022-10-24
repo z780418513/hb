@@ -76,7 +76,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public void uploadAvatar(MultipartFile file, Long id) {
+    public String uploadAvatar(MultipartFile file, Long id) {
         SysFile sysFile = null;
         try {
             sysFile = sysFileService.uploadFile(file);
@@ -88,7 +88,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             sysUser.setId(id);
             sysUser.setAvatar(sysFile.getOssUrl());
             baseMapper.updateById(sysUser);
+            return sysFile.getOssUrl();
         }
+        return "";
+    }
+
+    @Override
+    public SysUser getUserInfo(Long userId, String username) {
+        SysUser sysUser = sysUserMapper.selectOne(Wrappers.<SysUser>lambdaQuery()
+                .eq(userId != null, SysUser::getId, userId)
+                .eq(StringUtils.isNotBlank(username), SysUser::getUsername, username));
+        return sysUser;
     }
 
 

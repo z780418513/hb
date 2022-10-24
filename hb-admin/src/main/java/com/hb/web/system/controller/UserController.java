@@ -7,7 +7,6 @@ import com.hb.common.core.ValidGroup;
 import com.hb.common.enums.BusinessTypeEnum;
 import com.hb.system.dto.UserDTO;
 import com.hb.system.entity.SysUser;
-import com.hb.system.service.SysFileService;
 import com.hb.system.service.SysUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,8 +29,6 @@ public class UserController {
     private SysUserService sysUserService;
     @Resource
     private PasswordEncoder passwordEncoder;
-    @Resource
-    private SysFileService sysFileService;
 
 
     /**
@@ -89,9 +86,9 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public Result deleteUser(@PathVariable("id") Long id) {
         if (sysUserService.deleteById(id)) {
-            return Result.success("删除成功");
+            return Result.success();
         }
-        return Result.error("删除失败");
+        return Result.error();
     }
 
 
@@ -106,10 +103,25 @@ public class UserController {
         return Result.success(sysUserService.getMenusById(userId));
     }
 
+
+    /**
+     * 上传用户头像
+     *
+     * @param file 文件
+     * @param id   用户id
+     * @return 上传后地址
+     */
     @PostMapping("/uploadAvatar")
     public Result uploadAvatar(@RequestParam("file") MultipartFile file,
                                @RequestParam("id") Long id) {
-        sysUserService.uploadAvatar(file, id);
-        return Result.success();
+        String avatarUrl = sysUserService.uploadAvatar(file, id);
+        return Result.success(avatarUrl);
+    }
+
+    @GetMapping("/getUserInfo")
+    public Result getUserInfo(@RequestParam(value = "id", required = false) Long userId,
+                              @RequestParam(value = "username", required = false) String username) {
+        SysUser userInfo = sysUserService.getUserInfo(userId, username);
+        return Result.success(userInfo);
     }
 }

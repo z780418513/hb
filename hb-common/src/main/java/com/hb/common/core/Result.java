@@ -84,15 +84,7 @@ public class Result implements Serializable {
         return Result.success("操作成功", data);
     }
 
-    /**
-     * 返回成功消息
-     *
-     * @param msg 返回内容
-     * @return 成功消息
-     */
-    public static Result success(String msg) {
-        return Result.success(msg, null);
-    }
+
 
     /**
      * 返回成功消息
@@ -114,7 +106,7 @@ public class Result implements Serializable {
      * @return error
      */
     public static Result error() {
-        return Result.error("操作失败");
+        return Result.error("操作失败",null);
     }
 
     /**
