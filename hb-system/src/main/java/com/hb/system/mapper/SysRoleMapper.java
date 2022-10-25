@@ -31,4 +31,13 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
      * @return List<RoleWithModule>
      */
     List<ResourceAuth> queryRolesWithModule();
+
+    /**
+     * 添加用户角色管理信息
+     *
+     * @param userId 用户id
+     * @param roleId 角色id
+     * @return
+     */
+    int addUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 }

@@ -18,4 +18,11 @@ public interface SysRoleService extends IService<SysRole> {
      * @return List<SysRole>
      */
     List<SysRole> getAllRoles();
+
+    /**
+     * 给用户天加对应的角色
+     * @param userId 用户id
+     * @param roleName 角色名
+     */
+    void addUserRole(Long userId, String roleName);
 }

@@ -15,4 +15,8 @@
          LEFT JOIN sys_role r ON r.id = re.role_id
          WHERE  m.node_type = 2
     </select>
+
+    <insert id="addUserRole">
+        INSERT INTO sys_user_role (user_id,role_id) VALUES (#{userId}, #{roleId})
+    </insert>
 </mapper>

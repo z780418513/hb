@@ -11,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,8 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         CustomUserDetails userDetails = new CustomUserDetails();
         BeanUtils.copyProperties(user,userDetails);
-        // 密码编码
-        userDetails.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        userDetails.setPassword(user.getPassword());
         // 授权
         List<SysRole> sysRoles = roleMapper.queryRolesByUserId(user.getId());
         userDetails.setRoles(sysRoles);

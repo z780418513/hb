@@ -2,12 +2,14 @@ package com.hb.system.service.impl;
 
 import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.enums.RegisterTypeEnum;
+import com.hb.common.enums.RoleEnum;
 import com.hb.common.exceptions.BusinessException;
 import com.hb.system.config.DefaultUserConfig;
 import com.hb.system.dto.UserRegisterDTO;
 import com.hb.system.entity.SysUser;
 import com.hb.system.model.RegisterBody;
 import com.hb.system.service.RegisterService;
+import com.hb.system.service.SysRoleService;
 import com.hb.system.service.SysUserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class UserPasswordRegisterServiceImpl implements RegisterService {
     private DefaultUserConfig userConfig;
     @Resource
     private SysUserService sysUserService;
+    @Resource
+    private SysRoleService sysRoleService;
 
     @Override
     public void checkRegisterParams(RegisterBody registerBody) {
@@ -59,6 +63,9 @@ public class UserPasswordRegisterServiceImpl implements RegisterService {
         SysUser sysUser = generateUser(registerBody);
         // 写入数据库
         sysUserService.getBaseMapper().insert(sysUser);
+        SysUser user = sysUserService.getUserInfo(null, sysUser.getUsername());
+        // 添加角色
+        sysRoleService.addUserRole(user.getId(), RoleEnum.USER.getRoleName());
         return sysUser;
     }
 }
