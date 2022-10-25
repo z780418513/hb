@@ -119,16 +119,16 @@ public class SecurityConfig {
                 .csrf().disable()
                 // 永远不会创建HttpSession并且永远不会使用它来获取SecurityContext,适用于前后端分离
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                // 过滤请求
-//                .authorizeRequests()
+                .and()
+                // 过滤请求
+                .authorizeRequests()
 //                /* anonymous 匿名访问（登录后不能访问，未登录可以访问）
 //                 * permitAll 放行所有（不管有无登录，可以访问）
 //                 * */
 //                .antMatchers("/user/login").anonymous()
 //                .antMatchers("/captcha", "/user/register", "/user/register/mobile").permitAll()
-//                // 除上面外的所有请求全部需要鉴权认证
-//                .anyRequest().authenticated()
+                // 除上面外的所有请求全部需要鉴权认证
+                .anyRequest().authenticated()
                 // 配置accessDecisionManager和securityMetadataSource
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override

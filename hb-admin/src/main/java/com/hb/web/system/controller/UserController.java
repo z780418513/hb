@@ -147,8 +147,8 @@ public class UserController {
      */
     @PostMapping("/register")
     public Result register(@Validated(value = {ValidGroup.Add.class}) @RequestBody UserRegisterDTO registerBody) {
-        SysUser userInfo = userPasswordRegisterService.register(registerBody);
-        return Result.success(userInfo);
+        userPasswordRegisterService.register(registerBody);
+        return Result.success();
     }
 
     /**
@@ -159,7 +159,7 @@ public class UserController {
      */
     @PostMapping("/register/mobile")
     public Result register(@Validated(value = {ValidGroup.Add.class}) @RequestBody MobileRegisterDTO registerBody) {
-        SysUser userInfo = mobileRegisterService.register(registerBody);
-        return Result.success(userInfo);
+        mobileRegisterService.register(registerBody);
+        return Result.success();
     }
 }
