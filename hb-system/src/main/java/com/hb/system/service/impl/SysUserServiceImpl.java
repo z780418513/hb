@@ -8,6 +8,7 @@ import com.hb.common.core.PageBean;
 import com.hb.common.enums.BusinessExceptionEnum;
 import com.hb.common.exceptions.BusinessException;
 import com.hb.common.utils.PageUtils;
+import com.hb.system.config.DefaultUserConfig;
 import com.hb.system.dto.UserDTO;
 import com.hb.system.entity.SysFile;
 import com.hb.system.entity.SysUser;
@@ -38,6 +39,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysMenuService menuService;
     @Resource
     private SysFileService sysFileService;
+    @Resource
+    private DefaultUserConfig defaultUserConfig;
 
     @Override
     public boolean deleteById(Long id) {
@@ -100,6 +103,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .eq(StringUtils.isNotBlank(username), SysUser::getUsername, username));
         return sysUser;
     }
+
+    @Override
+    public SysUser getUserInfoByMobile(String mobile) {
+        if (StringUtils.isBlank(mobile)){
+            throw new BusinessException("mobile can`t be blank");
+        }
+        SysUser sysUser = baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getMobile, mobile));
+        return sysUser;
+    }
+
 
 
 }

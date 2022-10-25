@@ -1,12 +1,10 @@
 package com.hb.web.system.controller;
 
 import com.hb.common.core.Result;
-import com.hb.service.TokenService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -16,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/token")
 public class TokenController {
-    @Resource
-    private TokenService tokenService;
 
     /**
      * 刷新token

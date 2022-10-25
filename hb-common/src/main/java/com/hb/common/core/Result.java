@@ -2,9 +2,6 @@ package com.hb.common.core;
 
 
 import com.hb.common.constants.SysConstant;
-import com.hb.common.enums.BusinessExceptionEnum;
-import com.hb.common.enums.SysExceptionEnum;
-import com.hb.common.exceptions.BaseException;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -109,35 +106,6 @@ public class Result implements Serializable {
         return Result.error("操作失败",null);
     }
 
-    /**
-     * 返回错误消息
-     *
-     * @param exceptionEnum 业务异常枚举
-     * @return error
-     */
-    public static Result error(BusinessExceptionEnum exceptionEnum) {
-        return Result.error(exceptionEnum.getCode(), exceptionEnum.getMsg());
-    }
-
-    /**
-     * 返回错误消息
-     *
-     * @param exceptionEnum 系统异常
-     * @return error
-     */
-    public static Result error(SysExceptionEnum exceptionEnum) {
-        return Result.error(exceptionEnum.getCode(), exceptionEnum.getMsg());
-    }
-
-    /**
-     * 返回错误消息
-     *
-     * @param e 基础异常
-     * @return error
-     */
-    public static Result error(BaseException e) {
-        return Result.error(e.getExceptionCode(), e.getMessage());
-    }
 
     /**
      * 返回错误消息

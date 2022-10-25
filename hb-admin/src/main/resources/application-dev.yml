@@ -9,10 +9,11 @@ spring:
     host: 127.0.0.1
 
 
-# 阿里云oss配置
-aliyun:
-  enable-oss: true
-  endpoint: https://oss-cn-hangzhou.aliyuncs.com
-  access-key-secret: 1290490343-05-4
-  access-key-id: djskj43054545
 
+
+
+hb:
+  user:
+    defaultNickName: 用户昵称
+  security:
+    whiteList: /user/login, /user/register, /user/register/mobile

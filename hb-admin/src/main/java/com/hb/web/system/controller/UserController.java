@@ -1,12 +1,15 @@
 package com.hb.web.system.controller;
 
-import com.hb.annotations.WebLog;
 import com.hb.common.core.PageBean;
 import com.hb.common.core.Result;
 import com.hb.common.core.ValidGroup;
 import com.hb.common.enums.BusinessTypeEnum;
+import com.hb.core.annotations.WebLog;
+import com.hb.system.dto.MobileRegisterDTO;
 import com.hb.system.dto.UserDTO;
+import com.hb.system.dto.UserRegisterDTO;
 import com.hb.system.entity.SysUser;
+import com.hb.system.service.RegisterService;
 import com.hb.system.service.SysUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +32,10 @@ public class UserController {
     private SysUserService sysUserService;
     @Resource
     private PasswordEncoder passwordEncoder;
+    @Resource
+    private RegisterService mobileRegisterService;
+    @Resource
+    private RegisterService userPasswordRegisterService;
 
 
     /**
@@ -118,10 +125,41 @@ public class UserController {
         return Result.success(avatarUrl);
     }
 
+    /**
+     * 根据用户id或用户名获取用户信息
+     *
+     * @param userId   用户id
+     * @param username 用户名
+     * @return 用户信息
+     */
     @GetMapping("/getUserInfo")
     public Result getUserInfo(@RequestParam(value = "id", required = false) Long userId,
                               @RequestParam(value = "username", required = false) String username) {
         SysUser userInfo = sysUserService.getUserInfo(userId, username);
+        return Result.success(userInfo);
+    }
+
+    /**
+     * 注册用户
+     *
+     * @param registerBody
+     * @return 用户信息
+     */
+    @PostMapping("/register")
+    public Result register(@Validated(value = {ValidGroup.Add.class}) @RequestBody UserRegisterDTO registerBody) {
+        SysUser userInfo = userPasswordRegisterService.register(registerBody);
+        return Result.success(userInfo);
+    }
+
+    /**
+     * 注册用户（手机号）
+     *
+     * @param registerBody
+     * @return 用户信息
+     */
+    @PostMapping("/register/mobile")
+    public Result register(@Validated(value = {ValidGroup.Add.class}) @RequestBody MobileRegisterDTO registerBody) {
+        SysUser userInfo = mobileRegisterService.register(registerBody);
         return Result.success(userInfo);
     }
 }

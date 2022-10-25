@@ -5,7 +5,7 @@ import com.hb.common.constants.SecurityConstants;
 import com.hb.common.core.Result;
 import com.hb.common.core.ValidGroup;
 import com.hb.common.utils.RedisUtils;
-import com.hb.service.TokenService;
+import com.hb.core.security.service.TokenService;
 import com.hb.system.model.CustomUserDetails;
 import com.hb.system.model.LoginBody;
 import com.wf.captcha.SpecCaptcha;

@@ -16,9 +16,9 @@ public class BaseException extends RuntimeException {
         super(message, cause);
     }
 
-    public BaseException(BaseException e) {
-        super(e.getMessage(), e.getCause());
-        this.exceptionCode = e.exceptionCode;
+    public BaseException(Integer code, String message) {
+        super(message);
+        this.exceptionCode = code;
     }
 
 
@@ -26,7 +26,4 @@ public class BaseException extends RuntimeException {
         return exceptionCode;
     }
 
-    public void setExceptionCode(Integer exceptionCode) {
-        this.exceptionCode = exceptionCode;
-    }
 }

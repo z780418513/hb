@@ -8,11 +8,12 @@ import lombok.Getter;
  * @author zhaochengshui
  */
 @Getter
-public enum BusinessExceptionEnum implements BaseEnum{
+public enum BusinessExceptionEnum implements BaseEnum {
 
     /*数据不存在*/
     INFO_NOT_FOUND(3000, "数据不存在"),
     GET_LOGIN_USER_ERROR(3001, "获取用户信息异常"),
+    REGISTER_TYPE_ERROR(3002, "注册方式错误"),
     ;
 
     private final Integer code;

@@ -13,7 +13,7 @@ public class BusinessException extends BaseException {
     }
 
     public BusinessException(BusinessExceptionEnum exceptionEnum) {
-        super(exceptionEnum.getMsg());
+        super(exceptionEnum.getCode(),exceptionEnum.getMsg());
     }
 
 
