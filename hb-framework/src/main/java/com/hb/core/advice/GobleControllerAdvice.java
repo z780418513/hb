@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,6 +54,20 @@ public class GobleControllerAdvice {
         String allErrorMsg = e.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(","));
         return Result.error(allErrorMsg);
+    }
+
+
+    /**
+     * 请求参数异常 拦截器
+     *
+     * @param e MissingServletRequestParameterException
+     * @return Result
+     */
+    @ExceptionHandler({MissingServletRequestParameterException.class})
+    @ResponseBody
+    public Result missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
+        log.error("请求参数异常:  {} ===> {}", e.getClass().getName(), e.getMessage());
+        return Result.error(e.getMessage());
     }
 
     /**

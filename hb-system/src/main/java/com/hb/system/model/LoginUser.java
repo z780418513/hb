@@ -20,7 +20,7 @@ public class LoginUser {
     private String password;
 
     /**
-     * 角色
+     * 角色 多个用,分割
      */
     private String roles;
 

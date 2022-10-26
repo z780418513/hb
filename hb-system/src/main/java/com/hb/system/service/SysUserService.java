@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hb.common.core.PageBean;
 import com.hb.system.dto.UserDTO;
 import com.hb.system.entity.SysUser;
-import com.hb.system.vo.MenuVo;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * @author zhaochengshui
@@ -23,13 +20,6 @@ public interface SysUserService extends IService<SysUser> {
      */
     boolean deleteById(Long id);
 
-    /**
-     * 查询用户菜单
-     *
-     * @param userId 用户ID
-     * @return List<MenuVo>
-     */
-    List<MenuVo> getMenusById(Long userId);
 
     /**
      * 查询用户列表

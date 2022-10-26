@@ -16,14 +16,12 @@ import com.hb.system.mapper.SysUserMapper;
 import com.hb.system.service.SysFileService;
 import com.hb.system.service.SysMenuService;
 import com.hb.system.service.SysUserService;
-import com.hb.system.vo.MenuVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -51,11 +49,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return sysUserMapper.deleteById(id) == 1;
     }
 
-    @Override
-    public List<MenuVo> getMenusById(Long userId) {
-        List<MenuVo> menus = menuService.getTreeMenuByUserId(userId);
-        return menus;
-    }
 
     @Override
     public PageBean<SysUser> getUserList(UserDTO userDTO) {

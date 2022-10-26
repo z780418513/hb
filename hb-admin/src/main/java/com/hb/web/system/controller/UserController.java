@@ -77,17 +77,6 @@ public class UserController {
     }
 
 
-    /**
-     * 根据用户ID查询用户对应菜单
-     *
-     * @param userId
-     * @return
-     */
-    @GetMapping("/menus")
-    public Result getMenus(@RequestParam("id") Long userId) {
-        return Result.success(sysUserService.getMenusById(userId));
-    }
-
 
     /**
      * 上传用户头像

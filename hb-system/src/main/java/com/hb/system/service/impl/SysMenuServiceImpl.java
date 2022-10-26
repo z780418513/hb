@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hb.system.entity.SysMenu;
 import com.hb.system.mapper.SysMenuMapper;
 import com.hb.system.service.SysMenuService;
+import com.hb.system.service.SysRoleService;
 import com.hb.system.vo.MenuVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +23,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements SysMenuService {
-
+    @Resource
+    private SysRoleService sysRoleService;
 
     @Override
     public List<MenuVo> getChildrenMenusId(Long parentMenuId) {
@@ -58,13 +61,29 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<MenuVo> getTreeMenuByUserId(Long userId) {
         // 判断用户是否是ADMIN权限，不是的直接返回（只有ADMIN才能）
-        // TODO
-        List<MenuVo> vos = baseMapper.getTreeMenuByUserId(userId);
+        List<MenuVo> vos;
+        if (sysRoleService.isAdmin(userId)) {
+            vos = baseMapper.getMenuWithAdmin();
+        } else {
+            vos = baseMapper.getMenuByUserId(userId);
+        }
         List<MenuVo> parentVos = vos.stream().filter(vo -> vo.getParentId() == 0).collect(Collectors.toList());
         for (MenuVo parentVo : parentVos) {
             parentVo.setChildrens(getChildrenMenus(parentVo, vos));
         }
         return parentVos;
+    }
+
+    @Override
+    public List<MenuVo> getMenuByRoleName(String roleName) {
+        // 超级管理员
+        List<MenuVo> vos;
+        if (sysRoleService.isAdmin(roleName)) {
+            vos = baseMapper.getMenuWithAdmin();
+        } else {
+            vos = baseMapper.getMenuByRoleName(roleName);
+        }
+        return vos;
     }
 
     /**
@@ -89,7 +108,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
         return childrenMenus;
     }
-
 
 
 }

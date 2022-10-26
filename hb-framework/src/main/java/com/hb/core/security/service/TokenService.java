@@ -17,7 +17,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * tokenService 服务类
@@ -114,11 +112,6 @@ public class TokenService {
         LoginUser loginUser = new LoginUser();
         BeanUtils.copyProperties(userDetails,loginUser);
         loginUser.setLoginType(LoginTypeEnum.USERNAME_PASSWORD.getCode());
-        // 角色
-        String roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        loginUser.setRoles(roles);
         loginUser.setUuid(IdUtils.simpleUUID());
         loginUser.setIp(IpUtils.getIpAddr(request));
         loginUser.setLoginTime(System.currentTimeMillis());

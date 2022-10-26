@@ -2,14 +2,9 @@ package com.hb.web.system.controller;
 
 import com.hb.common.core.Result;
 import com.hb.system.service.SysMenuService;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 
 /**
  * @author zhaochengshui
@@ -29,7 +24,7 @@ public class MenuController {
      * @return Result
      */
     @GetMapping("/pid")
-    public Result getMenuByPid(@Validated @NotBlank(message = "菜单id不能为空") @RequestParam(value = "pid", required = false) Long menuId) {
+    public Result getMenuByPid(@RequestParam(value = "pid") Long menuId) {
         return Result.success(menuService.getChildrenMenusId(menuId));
     }
 
@@ -41,5 +36,16 @@ public class MenuController {
     @GetMapping("/tree")
     public Result getAllTreeMenu() {
         return Result.success(menuService.getAllTreeMenu());
+    }
+
+    /**
+     * 根据用户ID查询用户对应菜单
+     *
+     * @param userId
+     * @return
+     */
+    @GetMapping("/{id}")
+    public Result getMenus(@PathVariable("id") Long userId) {
+        return Result.success(menuService.getTreeMenuByUserId(userId));
     }
 }

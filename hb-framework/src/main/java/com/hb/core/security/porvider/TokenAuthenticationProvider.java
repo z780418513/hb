@@ -5,7 +5,9 @@ import com.hb.common.enums.SysExceptionEnum;
 import com.hb.common.exceptions.SysException;
 import com.hb.core.security.token.JwtAuthenticationToken;
 import com.hb.core.security.service.TokenService;
+import com.hb.system.entity.SysRole;
 import com.hb.system.model.LoginUser;
+import com.hb.system.service.SysRoleService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -24,6 +28,8 @@ import java.util.Collections;
 public class TokenAuthenticationProvider implements AuthenticationProvider {
     @Resource
     private TokenService tokenService;
+    @Resource
+    private SysRoleService sysRoleService;
 
 
     /**
@@ -42,10 +48,14 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         }
         // redis中获取登录用户信息
         LoginUser loginUser = (LoginUser) tokenService.getLoginUserFromRedis(token);
+        List<SysRole> roleList = sysRoleService.getRolesByUserId(loginUser.getId());
+        // 查询角色
+        String roleNameStr = roleList.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
+        loginUser.setRoles(roleNameStr);
         // 将用户信息缓存到容器中
         LoginUserContextHolder.setLoginUser(loginUser);
         return new JwtAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(),
-                Collections.singleton(new SimpleGrantedAuthority(loginUser.getRoles())));
+                Collections.singleton(new SimpleGrantedAuthority(roleNameStr)));
     }
 
     @Override

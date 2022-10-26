@@ -29,10 +29,19 @@ public interface SysMenuService extends IService<SysMenu> {
     List<MenuVo> getAllTreeMenu();
 
     /**
-     * 获得id获得 用户菜单
+     * 根据 用户id 获得 用户菜单
      *
      * @param userId 用户ID
      * @return List<MenuVo>
      */
     List<MenuVo> getTreeMenuByUserId(Long userId);
+
+
+    /**
+     * 根据 角色名 获得 用户菜单
+     *
+     * @param roleName 角色名
+     * @return List<MenuVo>
+     */
+    List<MenuVo> getMenuByRoleName(String roleName);
 }

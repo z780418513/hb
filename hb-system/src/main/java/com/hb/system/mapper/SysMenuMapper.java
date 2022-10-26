@@ -22,7 +22,21 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @param id 用户id
      * @return List<MenuVo>
      */
-    List<MenuVo> getTreeMenuByUserId(@Param("id") Long id);
+    List<MenuVo> getMenuByUserId(@Param("id") Long id);
+
+    /**
+     * 根据roleName 查询用户菜单
+     *
+     * @param roleName 角色名
+     * @return List<MenuVo>
+     */
+    List<MenuVo> getMenuByRoleName(@Param("roleName") String roleName);
 
 
+    /**
+     * 查询所有的菜单
+     *
+     * @return List<MenuVo>
+     */
+    List<MenuVo> getMenuWithAdmin();
 }

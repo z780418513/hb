@@ -5,11 +5,23 @@
 
 <mapper namespace="com.hb.system.mapper.SysMenuMapper">
 
-    <select id="getTreeMenuByUserId" resultType="com.hb.system.vo.MenuVo">
+    <select id="getMenuByUserId" resultType="com.hb.system.vo.MenuVo">
         SELECT sur.user_id,sur.role_id , sr.role_name, sm.* FROM sys_user_role sur
             LEFT JOIN sys_role sr ON sur.role_id  = sr.id
             LEFT JOIN sys_role_menu srm  ON srm.role_id = sr.id
             LEFT JOIN sys_menu sm ON srm.menu_id = sm.id
         WHERE sur.user_id = #{id} AND sm.node_type != 3 ORDER BY `LEVEL` ,	`sort`
+    </select>
+
+    <select id="getMenuWithAdmin" resultType="com.hb.system.vo.MenuVo">
+        SELECT   sm.* FROM sys_menu sm
+        WHERE  sm.node_type != 3 ORDER BY `LEVEL` ,	`sort`
+    </select>
+
+    <select id="getMenuByRoleName" resultType="com.hb.system.vo.MenuVo">
+        SELECT  sr.role_name, sm.* FROM sys_role sr
+          LEFT JOIN sys_role_menu srm  ON srm.role_id = sr.id
+          LEFT JOIN sys_menu sm ON srm.menu_id = sm.id
+        WHERE sr.role_name = #{roleName} AND sm.node_type != 3 ORDER BY `LEVEL` ,	`sort`
     </select>
 </mapper>
