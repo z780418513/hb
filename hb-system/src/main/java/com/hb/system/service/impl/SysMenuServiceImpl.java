@@ -53,7 +53,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         ).collect(Collectors.toList());
         List<MenuVo> parentVos = vos.stream().filter(vo -> vo.getParentId() == 0).collect(Collectors.toList());
         for (MenuVo parentVo : parentVos) {
-            parentVo.setChildrens(getChildrenMenus(parentVo, vos));
+            parentVo.setChildren(getChildrenMenus(parentVo, vos));
         }
         return parentVos;
     }
@@ -69,7 +69,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
         List<MenuVo> parentVos = vos.stream().filter(vo -> vo.getParentId() == 0).collect(Collectors.toList());
         for (MenuVo parentVo : parentVos) {
-            parentVo.setChildrens(getChildrenMenus(parentVo, vos));
+            parentVo.setChildren(getChildrenMenus(parentVo, vos));
         }
         return parentVos;
     }
@@ -103,7 +103,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 如果当前子菜单有下级子菜单，继续递归查询
         if (CollectionUtils.isNotEmpty(childrenMenus)) {
             for (MenuVo childrenMenu : childrenMenus) {
-                childrenMenu.setChildrens(getChildrenMenus(childrenMenu, allMenus));
+                childrenMenu.setChildren(getChildrenMenus(childrenMenu, allMenus));
             }
         }
         return childrenMenus;

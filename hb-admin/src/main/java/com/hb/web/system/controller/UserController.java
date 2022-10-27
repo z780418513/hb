@@ -45,7 +45,6 @@ public class UserController {
     }
 
 
-
     /**
      * 修改用户
      *
@@ -77,7 +76,6 @@ public class UserController {
     }
 
 
-
     /**
      * 上传用户头像
      *
@@ -93,16 +91,26 @@ public class UserController {
     }
 
     /**
-     * 根据用户id或用户名获取用户信息
+     * 根据用户用户名获取用户信息
      *
-     * @param userId   用户id
      * @param username 用户名
      * @return 用户信息
      */
-    @GetMapping("/getUserInfo")
-    public Result getUserInfo(@RequestParam(value = "id", required = false) Long userId,
-                              @RequestParam(value = "username", required = false) String username) {
-        SysUser userInfo = sysUserService.getUserInfo(userId, username);
+    @GetMapping("/getUserInfo/name")
+    public Result getUserInfoByUserName(@RequestParam(value = "username") String username) {
+        SysUser userInfo = sysUserService.getUserInfoByUserName(username);
+        return Result.success(userInfo);
+    }
+
+    /**
+     * 根据用户id 获取用户信息
+     *
+     * @param userId 用户id
+     * @return 用户信息
+     */
+    @GetMapping("/getUserInfo/id")
+    public Result getUserInfoById(@RequestParam(value = "id") Long userId) {
+        SysUser userInfo = sysUserService.getUserInfoById(userId);
         return Result.success(userInfo);
     }
 

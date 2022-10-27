@@ -106,6 +106,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return sysUser;
     }
 
+    @Override
+    public SysUser getUserInfoByUserName(String username) {
+        SysUser sysUser = sysUserMapper.selectOne(Wrappers.<SysUser>lambdaQuery()
+                .eq(StringUtils.isNotBlank(username), SysUser::getUsername, username));
+        return sysUser;
+    }
+
+    @Override
+    public SysUser getUserInfoById(Long userId) {
+        SysUser sysUser = sysUserMapper.selectOne(Wrappers.<SysUser>lambdaQuery()
+                .eq(userId != null, SysUser::getId, userId));
+        return sysUser;
+    }
 
 
 }

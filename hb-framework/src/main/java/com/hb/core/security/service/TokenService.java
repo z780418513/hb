@@ -99,10 +99,16 @@ public class TokenService {
     }
 
 
+    /**
+     * token 存放的数据
+     * @param user
+     * @return
+     */
     private HashMap<String, Object> convertLoginUser(LoginUser user) {
         HashMap<String, Object> map = new HashMap<>(12);
         map.put("ip", user.getIp());
         map.put("username", user.getUsername());
+        map.put("id",user.getId());
         return map;
     }
 

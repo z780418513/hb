@@ -61,7 +61,7 @@ public class MenuVo {
     /**
      * 子菜单
      */
-    private List<MenuVo> childrens;
+    private List<MenuVo> children;
 
     /**
      * 是否启用

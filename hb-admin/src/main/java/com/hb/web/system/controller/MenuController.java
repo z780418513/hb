@@ -45,7 +45,7 @@ public class MenuController {
      * @return
      */
     @GetMapping("/{id}")
-    public Result getMenus(@PathVariable("id") Long userId) {
+    public Result getTreeMenuByUserId(@PathVariable("id") Long userId) {
         return Result.success(menuService.getTreeMenuByUserId(userId));
     }
 }
