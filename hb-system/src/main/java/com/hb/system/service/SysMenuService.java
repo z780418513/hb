@@ -1,6 +1,7 @@
 package com.hb.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hb.system.dto.MenuDTO;
 import com.hb.system.entity.SysMenu;
 import com.hb.system.vo.MenuVo;
 
@@ -44,4 +45,43 @@ public interface SysMenuService extends IService<SysMenu> {
      * @return List<MenuVo>
      */
     List<MenuVo> getMenuByRoleName(String roleName);
+
+    /**
+     * 新增菜单
+     *
+     * @param dto
+     * @return
+     */
+    int addMenu(MenuDTO dto);
+
+    /**
+     * 开启禁用菜单
+     *
+     * @param dto 菜单
+     * @return
+     */
+    int switchMenu(MenuDTO dto);
+
+    /**
+     * 删除菜单
+     *
+     * @param id
+     * @return
+     */
+    int deleteMenu(Long id);
+
+    /**
+     * 根据父id查询子菜单
+     *
+     * @param pid 父id
+     * @return List<SysMenu>
+     */
+    List<SysMenu> getChildrenMenusByPid(Long pid);
+
+    /**
+     * 更新菜单信息
+     *
+     * @param dto
+     */
+    int updateMenu(MenuDTO dto);
 }

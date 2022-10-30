@@ -1,26 +1,17 @@
 package com.hb.core.security.access;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.hb.common.constants.SecurityConstants;
 import com.hb.common.utils.RedisUtils;
-import com.hb.system.model.ResourceAuth;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author zhaochengshui
@@ -54,17 +45,17 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
             list.add(roleAnonymous);
             return list;
         }
-        String requestUrl = ((FilterInvocation) object).getRequestUrl();
-        String module = (requestUrl.split("/"))[1];
-        Object resourceAuth = redisUtils.get(SecurityConstants.RESOURCE_AUTH_REDIS_PREFIX);
-        if (StringUtils.isNotBlank(module) && !Objects.isNull(resourceAuth)) {
-            List<ResourceAuth> auths = JSONObject.parseArray(resourceAuth.toString(), ResourceAuth.class);
-            Collection<ConfigAttribute> roles = auths.stream()
-                    .filter(auth -> auth.getModule().equals(module))
-                    .map(auth -> new SecurityConfig(auth.getRole()))
-                    .collect(Collectors.toCollection(ArrayList::new));
-            return CollectionUtils.isEmpty(roles) ? null : roles;
-        }
+//        String requestUrl = ((FilterInvocation) object).getRequestUrl();
+//        String module = (requestUrl.split("/"))[1];
+//        Object resourceAuth = redisUtils.get(SecurityConstants.RESOURCE_AUTH_REDIS_PREFIX);
+//        if (StringUtils.isNotBlank(module) && !Objects.isNull(resourceAuth)) {
+//            List<ResourceAuth> auths = JSONObject.parseArray(resourceAuth.toString(), ResourceAuth.class);
+//            Collection<ConfigAttribute> roles = auths.stream()
+//                    .filter(auth -> auth.getModule().equals(module))
+//                    .map(auth -> new SecurityConfig(auth.getRole()))
+//                    .collect(Collectors.toCollection(ArrayList::new));
+//            return CollectionUtils.isEmpty(roles) ? null : roles;
+//        }
         return null;
     }
 

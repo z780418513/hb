@@ -1,12 +1,12 @@
 package com.hb.core.security.porvider;
 
-import com.hb.core.LoginUserContextHolder;
 import com.hb.common.enums.SysExceptionEnum;
 import com.hb.common.exceptions.SysException;
-import com.hb.core.security.token.JwtAuthenticationToken;
 import com.hb.core.security.service.TokenService;
+import com.hb.core.security.token.JwtAuthenticationToken;
 import com.hb.system.entity.SysRole;
 import com.hb.system.model.LoginUser;
+import com.hb.system.model.LoginUserContextHolder;
 import com.hb.system.service.SysRoleService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;

@@ -1,10 +1,14 @@
 package com.hb.web.system.controller;
 
 import com.hb.common.core.Result;
+import com.hb.system.dto.MenuDTO;
+import com.hb.system.entity.SysMenu;
 import com.hb.system.service.SysMenuService;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author zhaochengshui
@@ -44,8 +48,81 @@ public class MenuController {
      * @param userId
      * @return
      */
-    @GetMapping("/{id}")
+    @GetMapping("/tree/user/{id}")
     public Result getTreeMenuByUserId(@PathVariable("id") Long userId) {
         return Result.success(menuService.getTreeMenuByUserId(userId));
+    }
+
+    /**
+     * 根据菜单id查询菜单
+     *
+     * @param menuId 菜单id
+     * @return
+     */
+    @GetMapping("/getById")
+    public Result getById(@RequestParam(value = "id") Long menuId) {
+        return Result.success(menuService.getById(menuId));
+    }
+
+
+    /**
+     * 新增菜单
+     *
+     * @param dto
+     * @return
+     */
+    @PostMapping("/add")
+    public Result addMenu(@RequestBody MenuDTO dto) {
+        menuService.addMenu(dto);
+        return Result.success();
+    }
+
+    /**
+     * 修改菜单
+     *
+     * @param dto
+     * @return
+     */
+    @PutMapping("/update")
+    public Result updateMenu(@RequestBody MenuDTO dto) {
+        menuService.updateMenu(dto);
+        return Result.success();
+    }
+
+    /**
+     * 开启禁用菜单
+     *
+     * @param dto
+     * @return
+     */
+    @PutMapping("/switch")
+    public Result switchMenu(@RequestBody MenuDTO dto) {
+        menuService.switchMenu(dto);
+        return Result.success();
+    }
+
+
+    /**
+     * 删除菜单
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/del/{id}")
+    public Result deleteMenu(@PathVariable("id") Long id) {
+        menuService.deleteMenu(id);
+        return Result.success();
+    }
+
+    /**
+     * 根据父id判断是否有子菜单
+     *
+     * @param pid 父id
+     * @return
+     */
+    @GetMapping("/hasChildren")
+    public Result hasChildren(@RequestParam("id") Long pid) {
+        List<SysMenu> menus = menuService.getChildrenMenusByPid(pid);
+        return Result.success(CollectionUtils.isEmpty(menus));
     }
 }

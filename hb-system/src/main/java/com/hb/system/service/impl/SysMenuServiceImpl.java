@@ -3,15 +3,21 @@ package com.hb.system.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hb.common.exceptions.BusinessException;
+import com.hb.system.dto.MenuDTO;
 import com.hb.system.entity.SysMenu;
 import com.hb.system.mapper.SysMenuMapper;
+import com.hb.system.model.LoginUser;
+import com.hb.system.model.LoginUserContextHolder;
 import com.hb.system.service.SysMenuService;
 import com.hb.system.service.SysRoleService;
 import com.hb.system.vo.MenuVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,6 +90,68 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             vos = baseMapper.getMenuByRoleName(roleName);
         }
         return vos;
+    }
+
+    @Override
+    public int addMenu(MenuDTO dto) {
+        Long parentId = dto.getParentId();
+        SysMenu parentMenu = baseMapper.selectById(parentId);
+        Assert.notNull(parentMenu, "无该父菜单信息");
+
+        SysMenu sysMenu = new SysMenu();
+        BeanUtils.copyProperties(dto, sysMenu);
+        sysMenu.setLevel(parentMenu.getLevel() + 1);
+        LoginUser loginUser = LoginUserContextHolder.getLoginUser();
+        sysMenu.setCreatedBy(loginUser.getUsername());
+        return baseMapper.insert(sysMenu);
+    }
+
+    @Override
+    public int switchMenu(MenuDTO dto) {
+        // 检验并返回sysMenu
+        SysMenu sysMenu = checkReturnMenuById(dto.getId());
+
+        sysMenu.setIsEnable(dto.getIsEnable());
+        sysMenu.setUpdateBy(LoginUserContextHolder.getLoginUser().getUsername());
+        sysMenu.setUpdateTime(LocalDateTime.now());
+        return baseMapper.updateById(sysMenu);
+    }
+
+    @Override
+    public int deleteMenu(Long id) {
+        SysMenu menu = baseMapper.selectById(id);
+        Assert.notNull(menu, "无该菜单信息");
+        // 校验子菜单是否存在，存在不能删除
+        List<SysMenu> childrenMenus = getChildrenMenusByPid(id);
+        if (CollectionUtils.isNotEmpty(childrenMenus)) {
+            throw new BusinessException("该菜单还有子菜单，不能删除");
+        }
+
+        return baseMapper.deleteById(id);
+    }
+
+    @Override
+    public List<SysMenu> getChildrenMenusByPid(Long pid) {
+        List<SysMenu> menus = baseMapper.selectList(Wrappers.<SysMenu>lambdaQuery().eq(SysMenu::getParentId, pid));
+        return menus;
+    }
+
+    @Override
+    public int updateMenu(MenuDTO dto) {
+        // 检验并返回sysMenu
+        SysMenu sysMenu = checkReturnMenuById(dto.getId());
+        BeanUtils.copyProperties(dto, sysMenu);
+        sysMenu.setUpdateBy(LoginUserContextHolder.getLoginUser().getUsername());
+        sysMenu.setUpdateTime(LocalDateTime.now());
+        return baseMapper.updateById(sysMenu);
+    }
+
+    private SysMenu checkReturnMenuById(Long id) {
+        SysMenu sysMenu = baseMapper.selectById(id);
+        if (sysMenu == null) {
+            throw new BusinessException("menu don`t exist ...");
+        }
+        return sysMenu;
     }
 
     /**

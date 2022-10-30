@@ -1,6 +1,4 @@
-package com.hb.core;
-
-import com.hb.system.model.LoginUser;
+package com.hb.system.model;
 
 /**
  * @author zhaochengshui

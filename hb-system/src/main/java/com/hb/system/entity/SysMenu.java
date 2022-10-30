@@ -78,6 +78,6 @@ public class SysMenu extends BaseEntity {
      * 是否启用
      */
     @TableField("is_enable")
-    private boolean isEnable;
+    private Boolean isEnable;
 
 }

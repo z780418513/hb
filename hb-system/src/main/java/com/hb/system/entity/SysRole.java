@@ -31,4 +31,10 @@ public class SysRole extends BaseEntity {
      */
     @TableField("description")
     private String description;
+
+    /**
+     * 角色状态 1=启用 0=禁用
+     */
+    @TableField("is_enable")
+    private Boolean isEnable;
 }
