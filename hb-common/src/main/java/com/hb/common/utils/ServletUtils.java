@@ -10,9 +10,11 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * 客户端工具类
+ * ServletUtils工具类
  *
- * @author ruoyi
+ * @author zhaochengshui
+ * @description
+ * @date 2022/10/18
  */
 public class ServletUtils {
     /**
