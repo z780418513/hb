@@ -15,6 +15,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.stream.Collectors;
 
@@ -67,6 +69,36 @@ public class GobleControllerAdvice {
     @ResponseBody
     public Result missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
         log.error("请求参数异常:  {} ===> {}", e.getClass().getName(), e.getMessage());
+        return Result.error(e.getMessage());
+    }
+
+    /**
+     * 内置400异常 拦截器
+     *
+     * @param e MethodArgumentTypeMismatchException
+     * @return Result
+     */
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    @ResponseBody
+    public Result missingServletRequestParameterExceptionHandler(MethodArgumentTypeMismatchException e) {
+        log.error("请求参数异常:  {} ===> {}", e.getClass().getName(), e.getMessage());
+        return Result.error(e.getMessage());
+    }
+
+    /**
+     * 404异常 拦截器
+     * <p>
+     * 默认spring不支持404抛出异常,需要支持需开启以下配置
+     * spring.mvc.throw-exception-if-no-handler-found=true
+     * spring.web.resources:add-mappings=false
+     *
+     * @param e NoHandlerFoundException
+     * @return Result
+     */
+    @ExceptionHandler({NoHandlerFoundException.class})
+    @ResponseBody
+    public Result missingServletRequestParameterExceptionHandler(NoHandlerFoundException e) {
+        log.error("请求资源不存在:  {} ===> {}", e.getClass().getName(), e.getMessage());
         return Result.error(e.getMessage());
     }
 
