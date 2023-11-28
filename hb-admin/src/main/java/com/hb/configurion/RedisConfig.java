@@ -1,4 +1,4 @@
-package com.hb.core.config;
+package com.hb.configurion;
 
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;

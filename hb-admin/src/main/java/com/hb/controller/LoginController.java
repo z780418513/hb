@@ -1,11 +1,11 @@
-package com.hb.web.system.controller;
+package com.hb.controller;
 
 
 import com.hb.common.constants.SecurityConstants;
 import com.hb.common.core.Result;
 import com.hb.common.core.ValidGroup;
-import com.hb.common.utils.RedisUtils;
-import com.hb.core.security.service.TokenService;
+import com.hb.core.utils.RedisUtils;
+import com.hb.core.security.service.JWTTokenService;
 import com.hb.system.model.CustomUserDetails;
 import com.hb.system.model.LoginBody;
 import com.wf.captcha.SpecCaptcha;
@@ -36,7 +36,7 @@ public class LoginController {
     @Resource
     private RedisUtils redisUtil;
     @Resource
-    private TokenService tokenService;
+    private JWTTokenService tokenService;
     @Resource
     private AuthenticationManager authenticationManager;
 

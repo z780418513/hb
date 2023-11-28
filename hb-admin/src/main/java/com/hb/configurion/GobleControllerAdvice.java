@@ -1,4 +1,4 @@
-package com.hb.core.advice;
+package com.hb.configurion;
 
 import com.hb.common.core.Result;
 import com.hb.common.enums.SysExceptionEnum;

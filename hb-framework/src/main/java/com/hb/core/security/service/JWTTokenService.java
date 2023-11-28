@@ -8,18 +8,15 @@ import com.hb.common.enums.SysExceptionEnum;
 import com.hb.common.exceptions.SysException;
 import com.hb.common.utils.IdUtils;
 import com.hb.common.utils.IpUtils;
-import com.hb.common.utils.JwtUtils;
-import com.hb.common.utils.RedisUtils;
+import com.hb.common.utils.JWTUtils;
+import com.hb.core.utils.RedisUtils;
 import com.hb.system.entity.SysUser;
 import com.hb.system.model.CustomUserDetails;
 import com.hb.system.model.LoginUser;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,27 +27,35 @@ import java.util.Objects;
  *
  * @author zhaochengshui
  */
-@Service
-@Data
-@Slf4j
-public class TokenService {
+
+public class JWTTokenService {
+    public final Logger log = LoggerFactory.getLogger(JWTTokenService.class);
 
     /**
      * 令牌头部(默认'')
      */
-    @Value("${jwt.token-header:}")
-    private String tokenHeader;
+    private final String tokenHeader;
     /**
      * 认证令牌过期时间
      */
-    @Value("${jwt.expiration}")
-    private long expiration;
+    private final long expiration;
 
-    @Resource
     private RedisUtils redisUtil;
-    @Resource
-    private JwtUtils jwtUtil;
 
+    private JWTUtils jwtUtil;
+
+    public JWTTokenService(String tokenHeader, long expiration) {
+        this.tokenHeader = tokenHeader;
+        this.expiration = expiration;
+    }
+
+    public void setRedisUtil(RedisUtils redisUtil) {
+        this.redisUtil = redisUtil;
+    }
+
+    public void setJwtUtil(JWTUtils jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     /**
      * 刷新token
@@ -101,6 +106,7 @@ public class TokenService {
 
     /**
      * token 存放的数据
+     *
      * @param user
      * @return
      */
@@ -108,7 +114,7 @@ public class TokenService {
         HashMap<String, Object> map = new HashMap<>(12);
         map.put("ip", user.getIp());
         map.put("username", user.getUsername());
-        map.put("id",user.getId());
+        map.put("id", user.getId());
         return map;
     }
 
@@ -116,7 +122,7 @@ public class TokenService {
     public LoginUser setUser(SysUser user, HttpServletRequest request) {
         CustomUserDetails userDetails = (CustomUserDetails) user;
         LoginUser loginUser = new LoginUser();
-        BeanUtils.copyProperties(userDetails,loginUser);
+        BeanUtils.copyProperties(userDetails, loginUser);
         loginUser.setLoginType(LoginTypeEnum.USERNAME_PASSWORD.getCode());
         loginUser.setUuid(IdUtils.simpleUUID());
         loginUser.setIp(IpUtils.getIpAddr(request));
@@ -161,7 +167,7 @@ public class TokenService {
     }
 
 
-    public Object getLoginUserFromRedis(String token){
+    public Object getLoginUserFromRedis(String token) {
         String username = getUserNameFromToken(token);
         return redisUtil.get(SecurityConstants.TOKEN_REDIS_PREFIX + username);
     }

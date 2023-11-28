@@ -1,7 +1,7 @@
-package com.hb.core.init;
+package com.hb.init;
 
 import com.hb.common.constants.SecurityConstants;
-import com.hb.common.utils.RedisUtils;
+import com.hb.core.utils.RedisUtils;
 import com.hb.system.mapper.SysRoleMapper;
 import com.hb.system.model.ResourceAuth;
 import org.springframework.stereotype.Component;

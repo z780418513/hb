@@ -10,9 +10,8 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
@@ -21,25 +20,29 @@ import java.util.Map;
  *
  * @author zhaochengshui
  */
-@Component
-public class JwtUtils {
-    public final Logger log = LoggerFactory.getLogger(JwtUtils.class);
+public class JWTUtils {
+    public final Logger log = LoggerFactory.getLogger(JWTUtils.class);
 
     /**
      * 密钥
      */
-    @Value("${jwt.secret}")
-    private String secret;
+    private final String secret;
+
     /**
      * 认证令牌过期时间
      */
-    @Value("${jwt.expiration}")
-    private long expiration;
+    private final long expiration;
+
     /**
-     * 刷新令牌过期时间(默认7天)
+     * 刷新令牌过期时间
      */
-    @Value("${jwt.refresh-expiration:168}")
-    private long refreshExpiration;
+    private final long refreshExpiration;
+
+    public JWTUtils(String secret, long expiration, long refreshExpiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+        this.refreshExpiration = refreshExpiration;
+    }
 
     /**
      * 生成令牌
@@ -121,7 +124,7 @@ public class JwtUtils {
             return jwt.getClaims();
         } catch (JWTDecodeException e) {
             log.warn("token解码失败:[ {} ]", e.getMessage());
-            return null;
+            return Collections.emptyMap();
         }
     }
 

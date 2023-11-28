@@ -1,4 +1,4 @@
-package com.hb.common.utils;
+package com.hb.core.utils;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

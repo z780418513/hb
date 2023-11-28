@@ -30,6 +30,7 @@
         <guava-version>31.1-jre</guava-version>
         <commons-io-version>2.11.0</commons-io-version>
         <commons-lang-version>2.6</commons-lang-version>
+        <redisson-boot.version>3.16.7</redisson-boot.version>
         <package.environment>dev</package.environment>
 
     </properties>
@@ -129,6 +130,12 @@
                 <version>${commons-io-version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson-boot.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.hb</groupId>
@@ -169,14 +176,6 @@
 
     <build>
         <plugins>
-            <!-- 跳过测试代码-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

@@ -1,4 +1,4 @@
-package com.hb.web.system.controller;
+package com.hb.controller;
 
 import com.hb.common.core.PageBean;
 import com.hb.common.core.Result;

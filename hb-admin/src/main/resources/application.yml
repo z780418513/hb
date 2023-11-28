@@ -22,6 +22,7 @@ server:
 
 # JWT配置
 jwt:
+  enable: true
   token-header: "Bearer " # 令牌头
   secret: aaaxxx # 秘钥
   expiration: 1 # 认证令牌过期时间(小时)

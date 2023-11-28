@@ -2,7 +2,7 @@ package com.hb.core.security.porvider;
 
 import com.hb.common.enums.SysExceptionEnum;
 import com.hb.common.exceptions.SysException;
-import com.hb.core.security.service.TokenService;
+import com.hb.core.security.service.JWTTokenService;
 import com.hb.core.security.token.JwtAuthenticationToken;
 import com.hb.system.entity.SysRole;
 import com.hb.system.model.LoginUser;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenAuthenticationProvider implements AuthenticationProvider {
     @Resource
-    private TokenService tokenService;
+    private JWTTokenService tokenService;
     @Resource
     private SysRoleService sysRoleService;
 

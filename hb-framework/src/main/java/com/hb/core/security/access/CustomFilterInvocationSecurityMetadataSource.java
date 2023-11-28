@@ -1,6 +1,6 @@
 package com.hb.core.security.access;
 
-import com.hb.common.utils.RedisUtils;
+import com.hb.core.utils.RedisUtils;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

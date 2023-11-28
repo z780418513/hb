@@ -3,9 +3,9 @@ package com.hb.core.security.filter;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.hb.common.constants.SecurityConstants;
 import com.hb.common.constants.SysConstant;
-import com.hb.common.utils.RedisUtils;
+import com.hb.core.utils.RedisUtils;
+import com.hb.core.security.service.JWTTokenService;
 import com.hb.core.security.token.JwtAuthenticationToken;
-import com.hb.core.security.service.TokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Resource
-    private TokenService tokenService;
+    private JWTTokenService tokenService;
     @Resource
     private AuthenticationManager authenticationManager;
     @Resource

@@ -34,7 +34,7 @@ import java.util.Objects;
 @Component
 public class WebLogAspect {
 
-    private final static Logger log = LoggerFactory.getLogger(WebLogAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(WebLogAspect.class);
     @Resource
     private SysOperateLogMapper operateLogMapper;
 

@@ -1,4 +1,4 @@
-package com.hb.core.config;
+package com.hb.configurion;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
